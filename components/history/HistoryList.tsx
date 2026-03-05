@@ -73,14 +73,12 @@ function HistoryEntryCard({ entry, onResume, onDelete }: HistoryEntryCardProps) 
 
       {/* Actions */}
       <div className="flex items-center gap-2 flex-shrink-0">
-        {!entry.isComplete && (
-          <button
-            onClick={() => onResume(entry)}
-            className="text-sm font-medium px-3 py-1.5 rounded-lg bg-guard-accent text-white hover:bg-guard-accent-hover transition-colors"
-          >
-            Resume
-          </button>
-        )}
+        <button
+          onClick={() => onResume(entry)}
+          className="text-sm font-medium px-3 py-1.5 rounded-lg bg-guard-accent text-white hover:bg-guard-accent-hover transition-colors"
+        >
+          {entry.isComplete ? 'View' : 'Resume'}
+        </button>
         <button
           onClick={() => onDelete(entry.id)}
           className="text-sm px-3 py-1.5 rounded-lg text-guard-blue-500 hover:text-guard-blue-800 hover:bg-guard-blue-50 transition-colors"

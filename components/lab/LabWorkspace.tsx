@@ -87,35 +87,38 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
 
   if (isLabComplete) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <div className="text-center max-w-md px-8">
-          <div className="w-16 h-16 rounded-full bg-guard-success/10 flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-8 h-8 text-guard-success"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
+      <SplitPanel
+        left={
+          <div className="h-full flex flex-col items-center justify-center px-8">
+            <div className="w-16 h-16 rounded-full bg-guard-success/10 flex items-center justify-center mb-4">
+              <svg
+                className="w-8 h-8 text-guard-success"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-xl font-semibold text-guard-blue-900 mb-2 text-center">
+              Lab Complete
+            </h2>
+            <p className="text-sm text-guard-blue-600 mb-6 text-center leading-relaxed">
+              You've completed all iterations. Review your conversation on the
+              right to reflect on how your prompts and the AI's responses
+              evolved across iterations.
+            </p>
+            <a
+              href="/"
+              className="inline-flex items-center justify-center rounded-lg bg-guard-accent text-white px-6 py-2.5 text-sm font-medium hover:bg-guard-accent-hover transition-colors"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-            </svg>
+              Back to Labs
+            </a>
           </div>
-          <h2 className="text-xl font-semibold text-guard-blue-900 mb-2">
-            Lab Complete
-          </h2>
-          <p className="text-sm text-guard-blue-600 mb-6">
-            You've completed all iterations of this lab. Review your chat
-            history to reflect on how your prompts and the AI's responses
-            evolved across iterations.
-          </p>
-          <a
-            href="/"
-            className="inline-flex items-center justify-center rounded-lg bg-guard-accent text-white px-6 py-2.5 text-sm font-medium hover:bg-guard-accent-hover transition-colors"
-          >
-            Back to Labs
-          </a>
-        </div>
-      </div>
+        }
+        right={<ChatPanel messages={messages} model={model} />}
+      />
     );
   }
 
