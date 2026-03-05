@@ -4,6 +4,7 @@
 AGENTS.md
 CLAUDE.md
 /.claude
+.claude
 
 # dependencies
 /node_modules
