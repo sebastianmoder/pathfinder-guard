@@ -38,6 +38,20 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
   useEffect(() => {
     if (!hasHydrated || !session || messages.length === 0) return;
     const config = getLabConfig(session.labId);
+    const currentIter = session.iterations[session.currentIteration];
+    const isLabComplete = currentIter?.isComplete && !session.iterations[session.currentIteration + 1];
+
+    // Save immediately on lab completion so navigating away doesn't cancel the save
+    if (isLabComplete) {
+      saveSession(
+        config?.meta.title ?? session.labId,
+        session,
+        messages,
+        config?.iterations.length ?? 3
+      );
+      return;
+    }
+
     const timer = setTimeout(() => {
       saveSession(
         config?.meta.title ?? session.labId,
