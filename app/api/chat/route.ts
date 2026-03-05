@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { messages, model = 'gpt-4.1-mini', apiKey } = await request.json();
+    const { messages, model = 'gpt-5-nano', apiKey } = await request.json();
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(

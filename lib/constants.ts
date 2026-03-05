@@ -16,7 +16,7 @@ export const PHASE_DESCRIPTIONS: Record<Phase, string> = {
   evaluate: 'Critically evaluate the AI response',
 };
 
-export const DEFAULT_MODEL = 'gpt-4.1-mini';
-export const BYOK_MODEL = 'gpt-4.1';
+export const DEFAULT_MODEL = 'gpt-5-nano';
+export const BYOK_MODEL = 'gpt-5.2';
 
 export const MAX_ITERATIONS = 3;
