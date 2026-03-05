@@ -8,6 +8,7 @@ import { useLabSession } from '@/hooks/useLabSession';
 import { useChat } from '@/hooks/useChat';
 import { useHasHydrated } from '@/hooks/useSessionPersistence';
 import { useChatStore } from '@/stores/chatStore';
+import { useHistoryStore } from '@/stores/historyStore';
 import { getLabConfig } from '@/content/labs';
 import type { LabId } from '@/lib/types';
 
@@ -20,6 +21,7 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
   const { session, startLab } = useLabSession();
   const { messages, isStreaming, error, model, sendMessage } = useChat();
   const clearError = useCallback(() => useChatStore.getState().setError(null), []);
+  const saveSession = useHistoryStore((s) => s.saveSession);
 
   // Initialize the lab session after hydration
   useEffect(() => {
@@ -31,6 +33,21 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
       }
     }
   }, [labId, session, startLab, hasHydrated]);
+
+  // Auto-save to history whenever there is meaningful progress
+  useEffect(() => {
+    if (!hasHydrated || !session || messages.length === 0) return;
+    const config = getLabConfig(session.labId);
+    const timer = setTimeout(() => {
+      saveSession(
+        config?.meta.title ?? session.labId,
+        session,
+        messages,
+        config?.iterations.length ?? 3
+      );
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [hasHydrated, session, messages, saveSession]);
 
   // Show loading skeleton while hydrating from sessionStorage
   if (!hasHydrated) {

@@ -108,11 +108,26 @@ export interface IterationState {
 }
 
 export interface LabSessionState {
+  sessionId: string;
   labId: LabId;
   currentIteration: number;
   iterations: Record<number, IterationState>;
   startedAt: number;
   lastActivityAt: number;
+}
+
+export interface SessionHistoryEntry {
+  id: string;
+  labId: LabId;
+  labTitle: string;
+  startedAt: number;
+  lastActivityAt: number;
+  currentIteration: number;
+  currentPhase: Phase;
+  totalIterations: number;
+  isComplete: boolean;
+  sessionSnapshot: LabSessionState;
+  chatSnapshot: ChatMessage[];
 }
 
 export interface ChatState {

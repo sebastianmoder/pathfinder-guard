@@ -20,6 +20,7 @@ interface ChatStore {
   setModel: (model: string) => void;
   setByokKey: (key: string | null) => void;
   clearMessages: () => void;
+  restoreMessages: (messages: ChatMessage[]) => void;
 }
 
 function generateId(): string {
@@ -102,6 +103,10 @@ export const useChatStore = create<ChatStore>()(
 
   clearMessages: () => {
     set({ messages: [], error: null });
+  },
+
+  restoreMessages: (messages) => {
+    set({ messages: messages.map((m) => ({ ...m, isStreaming: false })), error: null });
   },
 }),
     {

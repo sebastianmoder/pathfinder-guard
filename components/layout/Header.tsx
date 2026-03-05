@@ -32,6 +32,12 @@ export function Header() {
             Labs
           </Link>
           <Link
+            href="/history"
+            className="text-sm text-guard-blue-600 hover:text-guard-blue-800 transition-colors"
+          >
+            History
+          </Link>
+          <Link
             href="/settings"
             className="text-sm text-guard-blue-600 hover:text-guard-blue-800 transition-colors"
           >

@@ -14,6 +14,7 @@ interface LabSessionStore {
   session: LabSessionState | null;
 
   startLab: (labId: LabId, totalIterations: number) => void;
+  restoreSession: (session: LabSessionState) => void;
   setAnswer: (iterationNumber: number, questionId: string, answer: string) => void;
   setAssembledPrompt: (iterationNumber: number, prompt: string) => void;
   markPromptEdited: (iterationNumber: number) => void;
@@ -57,6 +58,7 @@ export const useLabSessionStore = create<LabSessionStore>()(
     }
     set({
       session: {
+        sessionId: crypto.randomUUID(),
         labId,
         currentIteration: 1,
         iterations,
@@ -64,6 +66,10 @@ export const useLabSessionStore = create<LabSessionStore>()(
         lastActivityAt: Date.now(),
       },
     });
+  },
+
+  restoreSession: (session) => {
+    set({ session });
   },
 
   setAnswer: (iterationNumber, questionId, answer) => {

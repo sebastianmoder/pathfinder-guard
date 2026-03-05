@@ -1,6 +1,8 @@
-import Link from 'next/link';
+'use client';
+
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import { useStartNewLab } from '@/hooks/useStartNewLab';
 import type { LabMeta } from '@/lib/types';
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -26,8 +28,13 @@ interface LabCardProps {
 }
 
 export function LabCard({ lab }: LabCardProps) {
+  const startNewLab = useStartNewLab();
+
   return (
-    <Link href={`/lab/${lab.id}`}>
+    <button
+      onClick={() => startNewLab(lab.id)}
+      className="w-full text-left"
+    >
       <Card hoverable className="h-full flex flex-col">
         <div className="flex items-start gap-4 mb-4">
           <div className="w-12 h-12 rounded-xl bg-guard-blue-50 flex items-center justify-center text-guard-accent flex-shrink-0">
@@ -49,6 +56,6 @@ export function LabCard({ lab }: LabCardProps) {
           </p>
         </div>
       </Card>
-    </Link>
+    </button>
   );
 }
