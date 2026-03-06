@@ -8,6 +8,7 @@ import { useChatStore } from '@/stores/chatStore';
 import { DEFAULT_MODEL, BYOK_MODELS, DEFAULT_BYOK_MODEL } from '@/lib/constants';
 
 const CUSTOM_SENTINEL = '__custom__';
+const OR_KEY_RE = /^sk-or-v1-[a-f0-9]{64}$/;
 
 type ModelEntry = { name: string; prompt: string; completion: string };
 type ModelMap = Record<string, ModelEntry>;
@@ -34,6 +35,10 @@ export default function SettingsPage() {
 
   const [keyInput, setKeyInput] = useState(byokKey ?? '');
   const [keySaved, setKeySaved] = useState(false);
+
+  const trimmedKey = keyInput.trim();
+  const keyFormatValid = trimmedKey === '' || OR_KEY_RE.test(trimmedKey);
+  const keyFormatError = trimmedKey !== '' && !keyFormatValid;
 
   // Pending model selection — not applied to the store until "Save Model" is clicked
   const isInitiallyCustom = byokKey !== null && !BYOK_MODELS.some((m) => m.id === model);
@@ -167,13 +172,18 @@ export default function SettingsPage() {
                 type="password"
                 value={keyInput}
                 onChange={(e) => setKeyInput(e.target.value)}
-                placeholder="sk-or-..."
-                className="w-full rounded-lg border border-guard-border bg-white px-3 py-2 text-sm text-guard-blue-900 placeholder:text-guard-blue-300 focus:outline-none focus:ring-2 focus:ring-guard-accent focus:border-transparent"
+                placeholder="sk-or-v1-..."
+                className={`w-full rounded-lg border bg-white px-3 py-2 text-sm text-guard-blue-900 placeholder:text-guard-blue-300 focus:outline-none focus:ring-2 focus:border-transparent ${keyFormatError ? 'border-red-400 focus:ring-red-300' : 'border-guard-border focus:ring-guard-accent'}`}
               />
+              {keyFormatError && (
+                <p className="mt-1 text-xs text-red-500">
+                  Not a valid OpenRouter API key — expected format: <span className="font-mono">sk-or-v1-…</span>
+                </p>
+              )}
             </div>
 
             <div className="flex items-center gap-3">
-              <Button onClick={handleSaveKey} size="sm">
+              <Button onClick={handleSaveKey} size="sm" disabled={keyFormatError}>
                 Save Key
               </Button>
               {byokKey && (
