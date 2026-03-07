@@ -20,7 +20,7 @@ export default function HistoryPage() {
         {/* Storage notice */}
         <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 mb-8 flex gap-3">
           <svg
-            className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5"
+            className="w-5 h-5 text-amber-500 shrink-0 mt-0.5"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
