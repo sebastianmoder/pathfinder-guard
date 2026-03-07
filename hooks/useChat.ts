@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react';
 import { useChatStore } from '@/stores/chatStore';
+import { useLabSessionStore } from '@/stores/labSessionStore';
 
 export function useChat() {
   const messages = useChatStore((s) => s.messages);
@@ -30,11 +31,17 @@ export function useChat() {
           .filter((m) => !m.isStreaming)
           .map((m) => ({ role: m.role, content: m.content }));
 
+        // Prepend system message if additional context is set
+        const additionalContext = useLabSessionStore.getState().session?.additionalContext;
+        const systemMessages = additionalContext
+          ? [{ role: 'system', content: `Additional course context provided by the educator:\n\n${additionalContext}` }]
+          : [];
+
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            messages: apiMessages,
+            messages: [...systemMessages, ...apiMessages],
             model,
             ...(byokKey ? { apiKey: byokKey } : {}),
           }),

@@ -17,6 +17,7 @@ export function useLabSession() {
   const completeIteration = useLabSessionStore((s) => s.completeIteration);
   const completeLab = useLabSessionStore((s) => s.completeLab);
   const resetSession = useLabSessionStore((s) => s.resetSession);
+  const setAdditionalContext = useLabSessionStore((s) => s.setAdditionalContext);
 
   const labConfig = useMemo(() => {
     if (!session) return undefined;
@@ -68,5 +69,6 @@ export function useLabSession() {
     completeIteration,
     completeLab,
     resetSession,
+    setAdditionalContext,
   };
 }

@@ -7,6 +7,7 @@ import { ReflectPhase } from './ReflectPhase';
 import { ComposePhase } from './ComposePhase';
 import { EvaluatePhase } from './EvaluatePhase';
 import { PhaseNavigation } from './PhaseNavigation';
+import { ContextUploadSection } from './ContextUploadSection';
 import { useLabSession } from '@/hooks/useLabSession';
 import { usePromptAssembly } from '@/hooks/usePromptAssembly';
 import type { ChatMessage } from '@/lib/types';
@@ -104,14 +105,17 @@ export function ScaffoldingPanel({ onSendToAI, isStreaming, chatMessages }: Scaf
 
   return (
     <div className="h-full flex flex-col">
-      <div className="p-6 pb-0 space-y-3">
-        <IterationIndicator
-          currentIteration={session.currentIteration}
-          totalIterations={totalIterations}
-          title={currentIterationConfig.title}
-          isOptional={currentIterationConfig.isOptional}
-        />
-        <PhaseIndicator currentPhase={currentIterationState.currentPhase} />
+      <div className="pt-6 pb-0 space-y-3">
+        <div className="px-6 space-y-3">
+          <IterationIndicator
+            currentIteration={session.currentIteration}
+            totalIterations={totalIterations}
+            title={currentIterationConfig.title}
+            isOptional={currentIterationConfig.isOptional}
+          />
+          <PhaseIndicator currentPhase={currentIterationState.currentPhase} />
+        </div>
+        <ContextUploadSection />
       </div>
 
       <div className="flex-1 overflow-y-auto p-6 animate-fade-in-up" key={`${session.currentIteration}-${currentIterationState.currentPhase}`}>

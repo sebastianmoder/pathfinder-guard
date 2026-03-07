@@ -114,6 +114,8 @@ export interface LabSessionState {
   iterations: Record<number, IterationState>;
   startedAt: number;
   lastActivityAt: number;
+  additionalContext?: string | null;
+  additionalContextFileName?: string | null;
 }
 
 export interface SessionHistoryEntry {

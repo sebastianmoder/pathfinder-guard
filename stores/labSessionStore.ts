@@ -24,6 +24,7 @@ interface LabSessionStore {
   completeIteration: (iterationNumber: number) => void;
   completeLab: () => void;
   resetSession: () => void;
+  setAdditionalContext: (text: string | null, fileName: string | null) => void;
 }
 
 function createIterationState(iterationNumber: number): IterationState {
@@ -229,6 +230,19 @@ export const useLabSessionStore = create<LabSessionStore>()(
         ...session,
         lastActivityAt: Date.now(),
         iterations: updatedIterations,
+      },
+    });
+  },
+
+  setAdditionalContext: (text, fileName) => {
+    const { session } = get();
+    if (!session) return;
+    set({
+      session: {
+        ...session,
+        lastActivityAt: Date.now(),
+        additionalContext: text,
+        additionalContextFileName: fileName,
       },
     });
   },
