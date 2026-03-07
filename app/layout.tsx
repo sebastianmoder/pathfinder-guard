@@ -27,7 +27,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/icon.ico" />
         <GoogleAnalytics gaId="G-CCR887R8FM" />
       </head>
       <body
