@@ -1,16 +1,17 @@
-'use client';
+"use client";
 
-import { useEffect, useCallback } from 'react';
-import { SplitPanel } from '@/components/layout/SplitPanel';
-import { ScaffoldingPanel } from '@/components/scaffolding/ScaffoldingPanel';
-import { ChatPanel } from '@/components/chat/ChatPanel';
-import { useLabSession } from '@/hooks/useLabSession';
-import { useChat } from '@/hooks/useChat';
-import { useHasHydrated } from '@/hooks/useSessionPersistence';
-import { useChatStore } from '@/stores/chatStore';
-import { useHistoryStore } from '@/stores/historyStore';
-import { getLabConfig } from '@/content/labs';
-import type { LabId } from '@/lib/types';
+import { useEffect, useCallback } from "react";
+import { SplitPanel } from "@/components/layout/SplitPanel";
+import { ScaffoldingPanel } from "@/components/scaffolding/ScaffoldingPanel";
+import { ChatPanel } from "@/components/chat/ChatPanel";
+import { useLabSession } from "@/hooks/useLabSession";
+import { useChat } from "@/hooks/useChat";
+import { useHasHydrated } from "@/hooks/useSessionPersistence";
+import { useChatStore } from "@/stores/chatStore";
+import { useHistoryStore } from "@/stores/historyStore";
+import { getLabConfig } from "@/content/labs";
+import type { LabId } from "@/lib/types";
+import Link from "next/link";
 
 interface LabWorkspaceProps {
   labId: LabId;
@@ -20,7 +21,10 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
   const hasHydrated = useHasHydrated();
   const { session, startLab } = useLabSession();
   const { messages, isStreaming, error, model, sendMessage } = useChat();
-  const clearError = useCallback(() => useChatStore.getState().setError(null), []);
+  const clearError = useCallback(
+    () => useChatStore.getState().setError(null),
+    [],
+  );
   const saveSession = useHistoryStore((s) => s.saveSession);
 
   // Initialize the lab session after hydration
@@ -39,7 +43,9 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
     if (!hasHydrated || !session || messages.length === 0) return;
     const config = getLabConfig(session.labId);
     const currentIter = session.iterations[session.currentIteration];
-    const isLabComplete = currentIter?.isComplete && !session.iterations[session.currentIteration + 1];
+    const isLabComplete =
+      currentIter?.isComplete &&
+      !session.iterations[session.currentIteration + 1];
 
     // Save immediately on lab completion so navigating away doesn't cancel the save
     if (isLabComplete) {
@@ -47,7 +53,7 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
         config?.meta.title ?? session.labId,
         session,
         messages,
-        config?.iterations.length ?? 3
+        config?.iterations.length ?? 3,
       );
       return;
     }
@@ -57,7 +63,7 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
         config?.meta.title ?? session.labId,
         session,
         messages,
-        config?.iterations.length ?? 3
+        config?.iterations.length ?? 3,
       );
     }, 2000);
     return () => clearTimeout(timer);
@@ -83,7 +89,8 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
 
   // Show lab complete state
   const currentIterState = session?.iterations[currentIteration];
-  const isLabComplete = currentIterState?.isComplete && !session?.iterations[currentIteration + 1];
+  const isLabComplete =
+    currentIterState?.isComplete && !session?.iterations[currentIteration + 1];
 
   if (isLabComplete) {
     return (
@@ -98,23 +105,27 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
                 stroke="currentColor"
                 strokeWidth={2}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </div>
             <h2 className="text-xl font-semibold text-guard-blue-900 mb-2 text-center">
               Lab Complete
             </h2>
             <p className="text-sm text-guard-blue-600 mb-6 text-center leading-relaxed">
-              You've completed all iterations. Review your conversation on the
-              right to reflect on how your prompts and the AI's responses
-              evolved across iterations.
+              You&apos;ve completed all iterations. Review your conversation on
+              the right to reflect on how your prompts and the AI&apos;s
+              responses evolved across iterations.
             </p>
-            <a
+            <Link
               href="/"
               className="inline-flex items-center justify-center rounded-lg bg-guard-accent text-white px-6 py-2.5 text-sm font-medium hover:bg-guard-accent-hover transition-colors"
             >
               Back to Labs
-            </a>
+            </Link>
           </div>
         }
         right={<ChatPanel messages={messages} model={model} />}
@@ -136,17 +147,37 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
           <ChatPanel messages={messages} model={model} />
           {error && (
             <div className="absolute bottom-16 left-0 right-0 mx-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700 flex items-start gap-2 animate-fade-in-up">
-              <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              <svg
+                className="w-4 h-4 mt-0.5 shrink-0"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                />
               </svg>
               <span className="flex-1">{error}</span>
               <button
                 onClick={clearError}
-                className="flex-shrink-0 text-red-400 hover:text-red-600 transition-colors"
+                className="shrink-0 text-red-400 hover:text-red-600 transition-colors"
                 aria-label="Dismiss error"
               >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>

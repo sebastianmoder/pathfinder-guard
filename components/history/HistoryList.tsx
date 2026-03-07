@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import { useHistoryStore } from '@/stores/historyStore';
-import { useLabSessionStore } from '@/stores/labSessionStore';
-import { useChatStore } from '@/stores/chatStore';
-import { useHasHydrated } from '@/hooks/useSessionPersistence';
-import type { SessionHistoryEntry } from '@/lib/types';
-import { PHASE_LABELS } from '@/lib/constants';
+import { useRouter } from "next/navigation";
+import { useHistoryStore } from "@/stores/historyStore";
+import { useLabSessionStore } from "@/stores/labSessionStore";
+import { useChatStore } from "@/stores/chatStore";
+import { useHasHydrated } from "@/hooks/useSessionPersistence";
+import type { SessionHistoryEntry } from "@/lib/types";
+import { PHASE_LABELS } from "@/lib/constants";
 
 function formatDate(ts: number): string {
   const d = new Date(ts);
   return d.toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
+    month: "short",
+    day: "numeric",
+    year: "numeric",
   });
 }
 
 function formatTime(ts: number): string {
   return new Date(ts).toLocaleTimeString(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
+    hour: "numeric",
+    minute: "2-digit",
   });
 }
 
@@ -30,16 +30,20 @@ interface HistoryEntryCardProps {
   onDelete: (id: string) => void;
 }
 
-function HistoryEntryCard({ entry, onResume, onDelete }: HistoryEntryCardProps) {
+function HistoryEntryCard({
+  entry,
+  onResume,
+  onDelete,
+}: HistoryEntryCardProps) {
   const phaseLabel = PHASE_LABELS[entry.currentPhase] ?? entry.currentPhase;
 
   return (
     <div className="bg-guard-surface border border-guard-border rounded-xl p-5 flex items-start gap-4">
       {/* Status dot */}
-      <div className="mt-1 flex-shrink-0">
+      <div className="mt-1 shrink-0">
         <span
           className={`block w-2.5 h-2.5 rounded-full ${
-            entry.isComplete ? 'bg-guard-success' : 'bg-guard-accent'
+            entry.isComplete ? "bg-guard-success" : "bg-guard-accent"
           }`}
         />
       </div>
@@ -47,15 +51,17 @@ function HistoryEntryCard({ entry, onResume, onDelete }: HistoryEntryCardProps) 
       {/* Main content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <h3 className="font-semibold text-guard-blue-900 truncate">{entry.labTitle}</h3>
+          <h3 className="font-semibold text-guard-blue-900 truncate">
+            {entry.labTitle}
+          </h3>
           <span
-            className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${
+            className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${
               entry.isComplete
-                ? 'bg-guard-success/10 text-guard-success'
-                : 'bg-guard-accent/10 text-guard-accent'
+                ? "bg-guard-success/10 text-guard-success"
+                : "bg-guard-accent/10 text-guard-accent"
             }`}
           >
-            {entry.isComplete ? 'Complete' : 'In Progress'}
+            {entry.isComplete ? "Complete" : "In Progress"}
           </span>
         </div>
 
@@ -66,26 +72,37 @@ function HistoryEntryCard({ entry, onResume, onDelete }: HistoryEntryCardProps) 
         </p>
 
         <p className="text-xs text-guard-blue-400">
-          Started {formatDate(entry.startedAt)} · Last active {formatDate(entry.lastActivityAt)} at{' '}
+          Started {formatDate(entry.startedAt)} · Last active{" "}
+          {formatDate(entry.lastActivityAt)} at{" "}
           {formatTime(entry.lastActivityAt)}
         </p>
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-2 flex-shrink-0">
+      <div className="flex items-center gap-2 shrink-0">
         <button
           onClick={() => onResume(entry)}
           className="text-sm font-medium px-3 py-1.5 rounded-lg bg-guard-accent text-white hover:bg-guard-accent-hover transition-colors"
         >
-          {entry.isComplete ? 'View' : 'Resume'}
+          {entry.isComplete ? "View" : "Resume"}
         </button>
         <button
           onClick={() => onDelete(entry.id)}
           className="text-sm px-3 py-1.5 rounded-lg text-guard-blue-500 hover:text-guard-blue-800 hover:bg-guard-blue-50 transition-colors"
           aria-label="Delete entry"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            />
           </svg>
         </button>
       </div>
@@ -98,7 +115,9 @@ export function HistoryList() {
   const hasHydrated = useHasHydrated();
   const { entries, deleteEntry } = useHistoryStore();
 
-  const sorted = [...entries].sort((a, b) => b.lastActivityAt - a.lastActivityAt);
+  const sorted = [...entries].sort(
+    (a, b) => b.lastActivityAt - a.lastActivityAt,
+  );
 
   const handleResume = (entry: SessionHistoryEntry) => {
     useLabSessionStore.getState().restoreSession(entry.sessionSnapshot);
@@ -132,7 +151,9 @@ export function HistoryList() {
             />
           </svg>
         </div>
-        <h2 className="text-base font-semibold text-guard-blue-900 mb-1">No sessions yet</h2>
+        <h2 className="text-base font-semibold text-guard-blue-900 mb-1">
+          No sessions yet
+        </h2>
         <p className="text-sm text-guard-blue-500">
           Start a lab and your progress will be saved here automatically.
         </p>
