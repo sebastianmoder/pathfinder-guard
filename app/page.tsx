@@ -1,4 +1,5 @@
 import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { LabCard } from "@/components/landing/LabCard";
 import { labMetas } from "@/content/labs";
@@ -44,7 +45,7 @@ export default function Home() {
             {/* Why BYOK */}
             <div className="bg-guard-surface border border-guard-border rounded-xl p-5 mb-4">
               <p className="text-sm font-semibold text-guard-blue-800 mb-1">
-                Why can&apos;t I just use ChatGPT?
+                Why don&apos;t you just use ChatGPT?
               </p>
               <p className="text-sm text-guard-blue-600 leading-relaxed mb-2">
                 Every time you send a prompt to an AI model like ChatGPT or
@@ -57,9 +58,10 @@ export default function Home() {
                 PATHFINDER is an{" "}
                 <strong>Erasmus+ funded educational project</strong>, and our
                 budget simply cannot cover frontier AI models for every user. By
-                bringing your own API key you pay only for what you use —
-                typically a few cents per lab session — while keeping the
-                platform free and accessible for everyone.
+                bringing your own API key, you can unlock a wide variety of
+                models while only paying for what you use — typically a few
+                cents per lab session — while keeping the platform free and
+                accessible for everyone.
               </p>
             </div>
 
@@ -187,6 +189,7 @@ export default function Home() {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }
