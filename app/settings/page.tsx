@@ -299,7 +299,7 @@ export default function SettingsPage() {
           {/* Why BYOK */}
           <div className="bg-guard-surface border border-guard-border rounded-xl p-5 mb-4">
             <p className="text-sm font-semibold text-guard-blue-800 mb-1">
-              Why don&apos;t you just use ChatGPT?
+              Why don&apos;t we just use ChatGPT?
             </p>
             <p className="text-sm text-guard-blue-600 leading-relaxed mb-2">
               Frontier models are not free to run. Even when each prompt only
