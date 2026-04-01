@@ -1,6 +1,19 @@
 import OpenAI from 'openai';
 import { NextResponse } from 'next/server';
 
+export const maxDuration = 60;
+
+type StreamChunk = {
+  error?: { message?: string } | string;
+  id?: string;
+  choices?: Array<{
+    delta?: {
+      content?: string | Array<{ type?: string; text?: string }>;
+    };
+    finish_reason?: string | null;
+  }>;
+};
+
 export async function POST(request: Request) {
   try {
     const { messages, model = 'stepfun/step-3.5-flash:free', apiKey } = await request.json();
@@ -37,10 +50,47 @@ export async function POST(request: Request) {
       async start(controller) {
         try {
           for await (const chunk of stream) {
-            const content = chunk.choices[0]?.delta?.content;
+            const streamChunk = chunk as StreamChunk;
+            const upstreamError =
+              typeof streamChunk.error === 'string'
+                ? streamChunk.error
+                : streamChunk.error?.message;
+            if (upstreamError) {
+              controller.enqueue(
+                encoder.encode(
+                  `data: ${JSON.stringify({ error: upstreamError, generationId: streamChunk.id })}\n\n`
+                )
+              );
+              controller.close();
+              return;
+            }
+
+            const choice = streamChunk.choices?.[0];
+            const finishReason = choice?.finish_reason;
+            const deltaContent = choice?.delta?.content;
+            const content =
+              typeof deltaContent === 'string'
+                ? deltaContent
+                : Array.isArray(deltaContent)
+                  ? deltaContent
+                      .filter((part) => part.type === 'text' && typeof part.text === 'string')
+                      .map((part) => part.text)
+                      .join('')
+                  : '';
+
             if (content) {
               controller.enqueue(
-                encoder.encode(`data: ${JSON.stringify({ content })}\n\n`)
+                encoder.encode(
+                  `data: ${JSON.stringify({ content, generationId: streamChunk.id })}\n\n`
+                )
+              );
+            }
+
+            if (finishReason) {
+              controller.enqueue(
+                encoder.encode(
+                  `data: ${JSON.stringify({ finishReason, generationId: streamChunk.id })}\n\n`
+                )
               );
             }
           }

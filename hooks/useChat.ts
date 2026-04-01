@@ -61,40 +61,89 @@ export function useChat() {
 
         const decoder = new TextDecoder();
         let buffer = '';
+        let didReceiveDone = false;
+        let finishReason: string | null = null;
+
+        const processLine = (line: string) => {
+          const trimmed = line.trim();
+          if (!trimmed || !trimmed.startsWith('data: ')) return;
+
+          const data = trimmed.slice(6);
+          if (data === '[DONE]') {
+            didReceiveDone = true;
+            return;
+          }
+
+          try {
+            const parsed = JSON.parse(data) as {
+              error?: string;
+              content?: string;
+              finishReason?: string;
+            };
+
+            if (parsed.error) {
+              throw new Error(parsed.error);
+            }
+
+            if (parsed.content) {
+              appendStreamChunk(assistantId, parsed.content);
+            }
+
+            if (parsed.finishReason) {
+              finishReason = parsed.finishReason;
+            }
+          } catch (parseErr) {
+            if (
+              parseErr instanceof Error &&
+              parseErr.message !== 'Unexpected end of JSON input'
+            ) {
+              throw parseErr;
+            }
+            // Skip malformed SSE data
+          }
+        };
+
+        const processBuffer = (flush = false) => {
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            processLine(line);
+          }
+
+          if (flush) {
+            const trailing = buffer.trim();
+            if (trailing) {
+              processLine(trailing);
+            }
+            buffer = '';
+          }
+        };
 
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
 
           buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
-          buffer = lines.pop() || '';
+          processBuffer();
+        }
 
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (!trimmed || !trimmed.startsWith('data: ')) continue;
+        buffer += decoder.decode();
+        processBuffer(true);
 
-            const data = trimmed.slice(6);
-            if (data === '[DONE]') continue;
-
-            try {
-              const parsed = JSON.parse(data);
-              if (parsed.error) {
-                throw new Error(parsed.error);
-              }
-              if (parsed.content) {
-                appendStreamChunk(assistantId, parsed.content);
-              }
-            } catch (parseErr) {
-              if (parseErr instanceof Error && parseErr.message !== 'Unexpected end of JSON input') {
-                throw parseErr;
-              }
-              // Skip malformed SSE data
-            }
-          }
+        if (!didReceiveDone) {
+          throw new Error('The response stream ended unexpectedly before completion.');
         }
 
         finishStreaming(assistantId);
+
+        if (finishReason === 'length') {
+          setError('The model stopped because it hit an output limit. The response may be truncated.');
+        } else if (finishReason === 'content_filter') {
+          setError('The model output was stopped by a content filter.');
+        } else if (finishReason === 'error') {
+          setError('The upstream model reported an error while streaming the response.');
+        }
       } catch (err) {
         finishStreaming(assistantId);
         setError(err instanceof Error ? err.message : 'An error occurred');
