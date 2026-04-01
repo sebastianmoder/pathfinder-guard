@@ -10,7 +10,7 @@ const items = [
     title: 'Powered by a free model',
     body: (
       <>
-        By default, GUARD uses <span className="font-medium text-guard-blue-800">Trinity Large Preview</span> by Arcee AI — a free model that requires no API key. Because it runs without cost, responses may vary in tone or depth compared to models you might be used to. 
+        By default, GUARD runs on <span className="font-medium text-guard-blue-800">stepfun/step-3.5-flash:free</span>, a free model that works without sign-up or an API key. It is intended to get you through the labs immediately; if you want stronger or more specialized models, you can switch later in Settings.
       </>
     ),
   },
@@ -23,11 +23,11 @@ const items = [
     title: 'Unlock more powerful models',
     body: (
       <>
-        Want to run ChatGPT, Claude, Gemini, Llama, Mistral, or other models directly inside GUARD? Add your own OpenRouter API key on the{' '}
+        Want to run ChatGPT, Claude, Gemini, Llama, Mistral, or another OpenRouter model directly inside GUARD? Add your own OpenRouter API key on the{' '}
         <Link href="/settings" className="font-medium text-guard-accent underline underline-offset-2 hover:opacity-80">
           Settings page
         </Link>{' '}
-        to activate a full selection of models at their standard API rates.
+        to unlock the full model catalogue and choose the endpoint that best fits your workflow.
       </>
     ),
   },
@@ -40,7 +40,7 @@ const items = [
     title: 'Use your own AI interface',
     body: (
       <>
-        You don&apos;t have to interact with the AI inside GUARD. Each lab assembles a structured prompt scaffold that you can <span className="font-medium text-guard-blue-800">copy and paste into any AI interface</span> — ChatGPT, Claude.ai, Gemini, Copilot, or anything else you are familiar with. 
+        You don&apos;t have to use GUARD&apos;s built-in chat at all. Each lab assembles a structured prompt scaffold that you can <span className="font-medium text-guard-blue-800">copy into any AI interface</span> — ChatGPT, Claude, Gemini, Copilot, or any other tool you already use.
       </>
     ),
   },

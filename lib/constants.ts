@@ -16,9 +16,9 @@ export const PHASE_DESCRIPTIONS: Record<Phase, string> = {
   evaluate: 'Critically evaluate the AI response',
 };
 
-export const DEFAULT_MODEL = 'arcee-ai/trinity-large-preview:free';
+export const DEFAULT_MODEL = 'stepfun/step-3.5-flash:free';
 export const BYOK_MODELS = [
-  { id: 'arcee-ai/trinity-large-preview:free', label: 'Trinity Large Preview (Arcee AI)' },
+  { id: 'stepfun/step-3.5-flash:free', label: 'Step 3.5 Flash (StepFun)' },
   { id: 'mistralai/mistral-small-3.2-24b-instruct', label: 'Mistral Small 3.2 24B' },
   { id: 'minimax/minimax-m2.5', label: 'MiniMax M2.5' },
   { id: 'openai/gpt-5.4', label: 'GPT-5.4 (OpenAI)' },

@@ -154,9 +154,9 @@ export default function SettingsPage() {
             >
               OpenRouter API key
             </a>{' '}
-            to choose from premium models instead of the default{' '}
-            <strong>{DEFAULT_MODEL}</strong>. Your key is stored only in your
-            browser&apos;s session storage and is never sent to our servers.
+            to switch away from the built-in free model,{' '}
+            <strong>{DEFAULT_MODEL}</strong>, and choose any compatible OpenRouter endpoint. Your key stays in your
+            browser&apos;s session storage and is never stored on our servers.
           </p>
 
           <div className="space-y-3">
@@ -289,10 +289,10 @@ export default function SettingsPage() {
               Default model — no account needed
             </p>
             <p className="text-sm text-guard-blue-600 leading-relaxed">
-              Out of the box, GUARD currently uses{' '}
-              <strong>Trinity Large Preview</strong> by Arcee AI — a free model
-              that requires no sign-up or API key. It is a capable
-              general-purpose AI suitable for all labs.
+              Out of the box, GUARD uses{' '}
+              <strong>stepfun/step-3.5-flash:free</strong>. It is a free default
+              model that requires no sign-up and no personal API key, so you can
+              open a lab and start working immediately.
             </p>
           </div>
 
@@ -302,20 +302,16 @@ export default function SettingsPage() {
               Why don&apos;t you just use ChatGPT?
             </p>
             <p className="text-sm text-guard-blue-600 leading-relaxed mb-2">
-              Every time you send a prompt to an AI model like ChatGPT or
-              Claude, the company behind it charges a small fee — often just a
-              fraction of a cent. That sounds negligible, but with hundreds or
-              thousands of users each running multiple lab iterations, those
-              fractions add up to substantial costs very quickly.
+              Frontier models are not free to run. Even when each prompt only
+              costs a fraction of a cent, usage compounds quickly once many
+              people are working through multiple lab iterations.
             </p>
             <p className="text-sm text-guard-blue-600 leading-relaxed">
               PATHFINDER is an{' '}
               <strong>Erasmus+ funded educational project</strong>, and our
-              budget simply cannot cover frontier AI models for every user. By
-              bringing your own API key, you can unlock a wide variety of models
-              while only paying for what you use — typically a few cents per lab
-              session — while keeping the platform free and accessible for
-              everyone.
+              budget cannot cover premium-model usage for every session. The
+              free default keeps GUARD open to everyone, while bring-your-own-key
+              access lets you opt into paid models and cover only your own usage.
             </p>
           </div>
 
@@ -327,8 +323,8 @@ export default function SettingsPage() {
             <p className="text-sm text-guard-blue-600 leading-relaxed mb-3">
               GUARD connects to AI models through a service called{' '}
               <strong>OpenRouter</strong> — think of it as a single gateway that
-              lets you access many different AI systems from one place. Here is
-              what to do:
+              lets you access many different AI systems from one place. To use a
+              paid or custom model:
             </p>
             <ol className="text-sm text-guard-blue-600 list-decimal list-inside space-y-1 mb-3">
               <li>
@@ -351,9 +347,9 @@ export default function SettingsPage() {
               <li>Paste the key into the API Key field above and choose a model.</li>
             </ol>
             <p className="text-xs text-guard-blue-400">
-              Your API key is stored only in your browser and is never sent to
-              our servers. Usage fees are billed directly to your OpenRouter
-              account — GUARD never handles your payment information.
+              Your API key is stored only in your browser session. Any model
+              usage is billed directly by OpenRouter to your account; GUARD does
+              not process payments or retain your key server-side.
             </p>
           </div>
 
@@ -364,7 +360,7 @@ export default function SettingsPage() {
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {[
-                { provider: 'Arcee AI', model: 'Trinity Large Preview', note: 'Free' },
+                { provider: 'StepFun', model: 'Step 3.5 Flash', note: 'Free' },
                 { provider: 'Mistral AI', model: 'Mistral Small 3.2 24B', note: 'Paid' },
                 { provider: 'MiniMax', model: 'MiniMax M2.5', note: 'Paid' },
                 { provider: 'OpenAI', model: 'GPT-5.4', note: 'Paid' },

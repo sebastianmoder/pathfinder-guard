@@ -138,6 +138,6 @@ npm run lint
 
 ## Notes
 
-- The default model constant is `arcee-ai/trinity-large-preview:free`.
+- The default model constant is `stepfun/step-3.5-flash:free`.
 - On hosted deployments, a shared OpenRouter key can be supplied through environment configuration.
 - `netlify.toml` currently contains a redirect from the old Netlify domain to `guard.ai-pathfinder.eu`.

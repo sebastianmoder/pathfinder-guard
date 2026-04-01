@@ -5,6 +5,8 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { ChatMessage } from '@/lib/types';
 import { DEFAULT_MODEL, DEFAULT_BYOK_MODEL } from '@/lib/constants';
 
+const LEGACY_DEFAULT_MODEL = 'arcee-ai/trinity-large-preview:free';
+
 interface ChatStore {
   messages: ChatMessage[];
   isStreaming: boolean;
@@ -29,7 +31,7 @@ function generateId(): string {
 
 export const useChatStore = create<ChatStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
   messages: [],
   isStreaming: false,
   error: null,
@@ -117,6 +119,19 @@ export const useChatStore = create<ChatStore>()(
         model: state.model,
         byokKey: state.byokKey,
       }),
+      merge: (persistedState, currentState) => {
+        const persisted = (persistedState ?? {}) as Partial<ChatStore>;
+        const shouldUpgradeLegacyDefault =
+          !persisted.byokKey && persisted.model === LEGACY_DEFAULT_MODEL;
+
+        return {
+          ...currentState,
+          ...persisted,
+          model: shouldUpgradeLegacyDefault
+            ? DEFAULT_MODEL
+            : persisted.model ?? currentState.model,
+        };
+      },
     }
   )
 );

@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { messages, model = 'arcee-ai/trinity-large-preview:free', apiKey } = await request.json();
+    const { messages, model = 'stepfun/step-3.5-flash:free', apiKey } = await request.json();
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(
