@@ -67,30 +67,27 @@ export function PhaseNavigation({
 
   if (currentPhase === 'evaluate') {
     const hasNextIteration = currentIteration < totalIterations;
+    let actionButton = null;
+
+    if (hasNextIteration) {
+      actionButton = (
+        <Button onClick={onAdvanceIteration} size="lg" className="w-full">
+          {isOptionalNext
+            ? `Continue to Iteration ${currentIteration + 1} (Optional)`
+            : `Continue to Iteration ${currentIteration + 1}`}
+        </Button>
+      );
+    } else {
+      actionButton = (
+        <Button onClick={onCompleteLab} size="lg" className="w-full">
+          Complete Lab
+        </Button>
+      );
+    }
 
     return (
       <div className="pt-4 border-t border-guard-border space-y-2">
-        {hasNextIteration ? (
-          <>
-            <Button onClick={onAdvanceIteration} size="lg" className="w-full">
-              {isOptionalNext
-                ? `Continue to Iteration ${currentIteration + 1} (Optional)`
-                : `Continue to Iteration ${currentIteration + 1}`}
-            </Button>
-            <Button
-              onClick={onCompleteLab}
-              variant="secondary"
-              size="lg"
-              className="w-full"
-            >
-              Complete Lab
-            </Button>
-          </>
-        ) : (
-          <Button onClick={onCompleteLab} size="lg" className="w-full">
-            Complete Lab
-          </Button>
-        )}
+        {actionButton}
       </div>
     );
   }
