@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { DEFAULT_MODEL } from '@/lib/constants';
 
 const items = [
   {
@@ -10,7 +11,7 @@ const items = [
     title: 'Powered by a free model',
     body: (
       <>
-        By default, GUARD runs on <span className="font-medium text-guard-blue-800">stepfun/step-3.5-flash:free</span>, a free model that works without sign-up or an API key. It is intended to get you through the labs immediately; if you want stronger or more specialized models, you can switch later in Settings.
+        By default, GUARD runs on <span className="font-medium text-guard-blue-800">{DEFAULT_MODEL}</span>, a free model that works without sign-up or an API key. It is intended to get you through the labs immediately; if you want stronger or more specialized models, you can switch later in Settings.
       </>
     ),
   },

@@ -138,6 +138,6 @@ npm run lint
 
 ## Notes
 
-- The default model constant is `stepfun/step-3.5-flash:free`.
+- The default model is defined by `DEFAULT_MODEL_OPTION` in `lib/constants.ts`. Update that single object to change the built-in default model, its labels, and its position at the top of the BYOK selector.
 - On hosted deployments, a shared OpenRouter key can be supplied through environment configuration.
 - `netlify.toml` currently contains a redirect from the old Netlify domain to `guard.ai-pathfinder.eu`.

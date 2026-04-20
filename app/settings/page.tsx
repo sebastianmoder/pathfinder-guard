@@ -290,7 +290,7 @@ export default function SettingsPage() {
             </p>
             <p className="text-sm text-guard-blue-600 leading-relaxed">
               Out of the box, GUARD uses{' '}
-              <strong>stepfun/step-3.5-flash:free</strong>. It is a free default
+              <strong>{DEFAULT_MODEL}</strong>. It is a free default
               model that requires no sign-up and no personal API key, so you can
               open a lab and start working immediately.
             </p>
@@ -359,36 +359,27 @@ export default function SettingsPage() {
               Models available with an OpenRouter key
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {[
-                { provider: 'StepFun', model: 'Step 3.5 Flash', note: 'Free' },
-                { provider: 'Mistral AI', model: 'Mistral Small 3.2 24B', note: 'Paid' },
-                { provider: 'MiniMax', model: 'MiniMax M2.5', note: 'Paid' },
-                { provider: 'OpenAI', model: 'GPT-5.4', note: 'Paid' },
-                { provider: 'Anthropic', model: 'Claude Opus 4.6', note: 'Paid' },
-                { provider: 'Anthropic', model: 'Claude Sonnet 4.6', note: 'Paid' },
-                { provider: 'Google', model: 'Gemini 2.5 Flash', note: 'Paid' },
-                { provider: 'Meta', model: 'Llama 4 Maverick', note: 'Paid' },
-              ].map(({ provider, model, note }) => (
+              {BYOK_MODELS.map((modelOption) => (
                 <div
-                  key={model}
+                  key={modelOption.id}
                   className="flex items-center justify-between rounded-lg bg-guard-bg px-3 py-2"
                 >
                   <div>
                     <span className="text-sm text-guard-blue-800 font-medium">
-                      {model}
+                      {modelOption.name}
                     </span>
                     <span className="text-xs text-guard-blue-400 ml-1.5">
-                      by {provider}
+                      by {modelOption.provider}
                     </span>
                   </div>
                   <span
                     className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                      note === 'Free'
+                      modelOption.availability === 'Free'
                         ? 'bg-guard-success/10 text-guard-success'
                         : 'bg-guard-blue-50 text-guard-blue-400'
                     }`}
                   >
-                    {note}
+                    {modelOption.availability}
                   </span>
                 </div>
               ))}

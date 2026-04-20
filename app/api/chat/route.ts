@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { NextResponse } from 'next/server';
+import { DEFAULT_MODEL } from '@/lib/constants';
 
 export const maxDuration = 60;
 
@@ -16,7 +17,7 @@ type StreamChunk = {
 
 export async function POST(request: Request) {
   try {
-    const { messages, model = 'stepfun/step-3.5-flash:free', apiKey } = await request.json();
+    const { messages, model = DEFAULT_MODEL, apiKey } = await request.json();
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return NextResponse.json(

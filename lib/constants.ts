@@ -16,17 +16,78 @@ export const PHASE_DESCRIPTIONS: Record<Phase, string> = {
   evaluate: 'Critically evaluate the AI response',
 };
 
-export const DEFAULT_MODEL = 'stepfun/step-3.5-flash:free';
-export const BYOK_MODELS = [
-  { id: 'stepfun/step-3.5-flash:free', label: 'Step 3.5 Flash (StepFun)' },
-  { id: 'mistralai/mistral-small-3.2-24b-instruct', label: 'Mistral Small 3.2 24B' },
-  { id: 'minimax/minimax-m2.5', label: 'MiniMax M2.5' },
-  { id: 'openai/gpt-5.4', label: 'GPT-5.4 (OpenAI)' },
-  { id: 'anthropic/claude-opus-4.6', label: 'Claude Opus 4.6 (Anthropic)' },
-  { id: 'anthropic/claude-sonnet-4.6', label: 'Claude Sonnet 4.6 (Anthropic)' },
-  { id: 'google/gemini-2.5-flash', label: 'Gemini 2.5 Flash (Google)' },
-  { id: 'meta-llama/llama-4-maverick', label: 'Llama 4 Maverick (Meta)' },
+export type ModelAvailability = 'Free' | 'Paid';
+
+export type ModelOption = {
+  id: string;
+  name: string;
+  provider: string;
+  label: string;
+  availability: ModelAvailability;
+};
+
+export const DEFAULT_MODEL_OPTION: ModelOption = {
+  id: 'stepfun/step-3.5-flash:free',
+  name: 'Step 3.5 Flash',
+  provider: 'StepFun',
+  label: 'Step 3.5 Flash (StepFun)',
+  availability: 'Free',
+};
+
+export const DEFAULT_MODEL = DEFAULT_MODEL_OPTION.id;
+
+export const BYOK_MODELS: ModelOption[] = [
+  DEFAULT_MODEL_OPTION,
+  {
+    id: 'mistralai/mistral-small-3.2-24b-instruct',
+    name: 'Mistral Small 3.2 24B',
+    provider: 'Mistral AI',
+    label: 'Mistral Small 3.2 24B',
+    availability: 'Paid',
+  },
+  {
+    id: 'minimax/minimax-m2.5',
+    name: 'MiniMax M2.5',
+    provider: 'MiniMax',
+    label: 'MiniMax M2.5',
+    availability: 'Paid',
+  },
+  {
+    id: 'openai/gpt-5.4',
+    name: 'GPT-5.4',
+    provider: 'OpenAI',
+    label: 'GPT-5.4 (OpenAI)',
+    availability: 'Paid',
+  },
+  {
+    id: 'anthropic/claude-opus-4.6',
+    name: 'Claude Opus 4.6',
+    provider: 'Anthropic',
+    label: 'Claude Opus 4.6 (Anthropic)',
+    availability: 'Paid',
+  },
+  {
+    id: 'anthropic/claude-sonnet-4.6',
+    name: 'Claude Sonnet 4.6',
+    provider: 'Anthropic',
+    label: 'Claude Sonnet 4.6 (Anthropic)',
+    availability: 'Paid',
+  },
+  {
+    id: 'google/gemini-2.5-flash',
+    name: 'Gemini 2.5 Flash',
+    provider: 'Google',
+    label: 'Gemini 2.5 Flash (Google)',
+    availability: 'Paid',
+  },
+  {
+    id: 'meta-llama/llama-4-maverick',
+    name: 'Llama 4 Maverick',
+    provider: 'Meta',
+    label: 'Llama 4 Maverick (Meta)',
+    availability: 'Paid',
+  },
 ];
-export const DEFAULT_BYOK_MODEL = BYOK_MODELS[0].id;
+export const DEFAULT_BYOK_MODEL = DEFAULT_MODEL;
 
 export const MAX_ITERATIONS = 3;
