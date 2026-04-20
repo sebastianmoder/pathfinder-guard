@@ -27,10 +27,10 @@ export type ModelOption = {
 };
 
 export const DEFAULT_MODEL_OPTION: ModelOption = {
-  id: 'stepfun/step-3.5-flash:free',
-  name: 'Step 3.5 Flash',
-  provider: 'StepFun',
-  label: 'Step 3.5 Flash (StepFun)',
+  id: 'minimax/minimax-m2.7',
+  name: 'MiniMax M2.7',
+  provider: 'MiniMax',
+  label: 'MiniMax M2.7 (MiniMax)',
   availability: 'Free',
 };
 
