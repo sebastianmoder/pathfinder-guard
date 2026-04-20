@@ -46,13 +46,6 @@ export const BYOK_MODELS: ModelOption[] = [
     availability: 'Paid',
   },
   {
-    id: 'minimax/minimax-m2.5',
-    name: 'MiniMax M2.5',
-    provider: 'MiniMax',
-    label: 'MiniMax M2.5',
-    availability: 'Paid',
-  },
-  {
     id: 'openai/gpt-5.4',
     name: 'GPT-5.4',
     provider: 'OpenAI',
