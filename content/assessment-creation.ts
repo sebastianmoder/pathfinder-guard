@@ -26,6 +26,15 @@ export const assessmentCreationLab: LabConfig = {
         {
           id: 'q1',
           question:
+            'What course or learning context is this assessment for, and who are the students?',
+          placeholder:
+            'e.g., First-year biology students in an introductory cell biology unit...',
+          templateSlot: 'COURSE_CONTEXT',
+          inputType: 'textarea',
+        },
+        {
+          id: 'q2',
+          question:
             'What topic or unit is this assessment for?',
           placeholder:
             'e.g., Photosynthesis, The Civil Rights Movement, Linear Equations...',
@@ -33,7 +42,7 @@ export const assessmentCreationLab: LabConfig = {
           inputType: 'text',
         },
         {
-          id: 'q2',
+          id: 'q3',
           question:
             'What specific knowledge or skill should this assessment measure? Try to be precise: what would a successful student demonstrate?',
           placeholder:
@@ -42,7 +51,7 @@ export const assessmentCreationLab: LabConfig = {
           inputType: 'textarea',
         },
         {
-          id: 'q3',
+          id: 'q4',
           question:
             'What level of cognitive demand are you targeting — recall of facts, application to new scenarios, analysis, or evaluation?',
           placeholder:
@@ -51,31 +60,22 @@ export const assessmentCreationLab: LabConfig = {
           inputType: 'textarea',
         },
         {
-          id: 'q4',
+          id: 'q5',
           question:
-            'What format fits this assessment purpose: multiple choice, short answer, open-ended response, performance task, or a mix?',
+            'What format, length, and conditions should the assessment use?',
           placeholder:
-            'e.g., Mix of multiple choice for foundational concepts and short answer for application...',
-          templateSlot: 'FORMAT',
+            'e.g., 8 questions, mix of multiple choice and short answer, 20 minutes, individual, closed-book...',
+          templateSlot: 'ASSESSMENT_FORMAT',
           inputType: 'textarea',
         },
         {
-          id: 'q5',
+          id: 'q6',
           question:
             'What would a common misconception or error look like on this assessment? Knowing this helps ensure the assessment actually catches misunderstanding.',
           placeholder:
             'e.g., Students often confuse velocity with acceleration, or think heavier objects fall faster...',
           templateSlot: 'MISCONCEPTION',
           inputType: 'textarea',
-        },
-        {
-          id: 'q6',
-          question:
-            'How many questions should the assessment include?',
-          placeholder:
-            'e.g., 5, 10, 15...',
-          templateSlot: 'NUMBER',
-          inputType: 'text',
         },
         {
           id: 'q7',
@@ -89,8 +89,13 @@ export const assessmentCreationLab: LabConfig = {
       ],
       promptTemplate: {
         templateText:
-          'I need to create a [ASSESSMENT_PURPOSE] assessment on the topic of [TOPIC].\n\nThe assessment should measure students\' ability to [SPECIFIC_SKILL].\n\nI want the questions to require [COGNITIVE_LEVEL] thinking.\n\nA common student misconception in this area is [MISCONCEPTION].\n\nPlease create [NUMBER] [FORMAT] questions. For each question, include the correct answer and a brief explanation of what the question tests.',
+          'You are an experienced educator and assessment designer. Create an assessment that is aligned, rigorous, and practical for the stated classroom context.\n\nCourse and students: [COURSE_CONTEXT].\n\nAssessment purpose: [ASSESSMENT_PURPOSE].\n\nTopic or unit: [TOPIC].\n\nThe assessment should measure students\' ability to [SPECIFIC_SKILL].\n\nTarget cognitive demand: [COGNITIVE_LEVEL].\n\nRequired format, length, and conditions: [ASSESSMENT_FORMAT].\n\nCommon misconception or error to diagnose: [MISCONCEPTION].\n\nUse these inputs as design requirements. Before drafting, privately map the target skill to the requested cognitive demand, decide what evidence each question should elicit, and ensure at least some items distinguish genuine understanding from memorized or easily searchable knowledge.\n\nThen produce only the assessment in clear markdown format.\n\nPlease include:\n- a concise assessment title\n- a short overview of what the assessment measures\n- the full set of questions in the requested format\n- answer key or model answers\n- brief scoring guidance or point values where useful\n- a note for each question explaining what it tests and which misconception, if any, it can reveal\n- a brief alignment note explaining how the assessment fits the purpose, students, and cognitive demand',
         slots: [
+          {
+            id: 'COURSE_CONTEXT',
+            label: 'Course Context',
+            defaultText: 'course context and student level',
+          },
           {
             id: 'ASSESSMENT_PURPOSE',
             label: 'Purpose (Formative/Summative)',
@@ -113,14 +118,9 @@ export const assessmentCreationLab: LabConfig = {
             defaultText: 'a common misconception',
           },
           {
-            id: 'NUMBER',
-            label: 'Number of Questions',
-            defaultText: 'number of',
-          },
-          {
-            id: 'FORMAT',
-            label: 'Question Format',
-            defaultText: 'question format',
+            id: 'ASSESSMENT_FORMAT',
+            label: 'Format and Conditions',
+            defaultText: 'assessment format, length, and conditions',
           },
         ],
       },
@@ -206,10 +206,28 @@ export const assessmentCreationLab: LabConfig = {
           templateSlot: 'LANGUAGE_BIAS',
           inputType: 'textarea',
         },
+        {
+          id: 'q5',
+          question:
+            'Where do the answer key, explanations, or factual claims need correction or verification?',
+          placeholder:
+            'e.g., The answer to Q4 is debatable, and the explanation for Q6 oversimplifies...',
+          templateSlot: 'ACCURACY_CONCERNS',
+          inputType: 'textarea',
+        },
+        {
+          id: 'q6',
+          question:
+            'Which questions or design choices are worth keeping because they align well with your goals?',
+          placeholder:
+            'e.g., Keep Q2 because it uses a scenario students recognize; keep the short-answer format for synthesis...',
+          templateSlot: 'KEEP_ELEMENTS',
+          inputType: 'textarea',
+        },
       ],
       promptTemplate: {
         templateText:
-          'Please revise the assessment based on these issues I identified:\n\n1. Searchability concern: [SEARCHABILITY]. Replace easily-Googled questions with ones requiring genuine understanding.\n2. Alignment gap: [ALIGNMENT_GAP]. Ensure questions reflect what I actually teach.\n3. Depth issue: [DEPTH_CHECK]. Add questions that distinguish deep from surface understanding.\n4. Language concern: [LANGUAGE_BIAS]. Simplify language where it obscures the subject being tested.\n\nFor each revised question, explain what changed and why.',
+          'You are an experienced educator and assessment designer. Revise the most recent assessment in this conversation. Treat that previous assessment as the draft to improve, not as a prompt to start over from scratch.\n\nI reviewed the draft and identified these issues:\n\nSearchability concern: [SEARCHABILITY].\n\nAlignment gap: [ALIGNMENT_GAP].\n\nDepth issue: [DEPTH_CHECK].\n\nLanguage or accessibility concern: [LANGUAGE_BIAS].\n\nAnswer key, explanation, or factual accuracy concerns: [ACCURACY_CONCERNS].\n\nQuestions or design choices worth keeping: [KEEP_ELEMENTS].\n\nBefore revising, privately determine which items should be kept, edited, replaced, or reordered. Replace easily searchable or recall-only items with items that require the intended reasoning, application, analysis, or evaluation. Preserve strong items, correct any answer-key or explanation problems, and simplify wording where language complexity obscures the subject knowledge being assessed.\n\nThen produce only the revised assessment in clear markdown format.\n\nPlease include:\n- the revised question set\n- answer key or model answers\n- scoring guidance or point values where useful\n- a brief note for each question explaining what changed or why it was kept\n- a short alignment note explaining how the revision better measures genuine understanding',
         slots: [
           {
             id: 'SEARCHABILITY',
@@ -230,6 +248,16 @@ export const assessmentCreationLab: LabConfig = {
             id: 'LANGUAGE_BIAS',
             label: 'Language Concern',
             defaultText: 'language issues in questions',
+          },
+          {
+            id: 'ACCURACY_CONCERNS',
+            label: 'Accuracy Concerns',
+            defaultText: 'answer key or factual accuracy concerns',
+          },
+          {
+            id: 'KEEP_ELEMENTS',
+            label: 'Elements to Keep',
+            defaultText: 'questions or design choices to preserve',
           },
         ],
       },
@@ -318,10 +346,19 @@ export const assessmentCreationLab: LabConfig = {
           templateSlot: 'PERSONAL_ADDITIONS',
           inputType: 'textarea',
         },
+        {
+          id: 'q4',
+          question:
+            'What final administration, scoring, or feedback notes would make this assessment usable in your classroom?',
+          placeholder:
+            'e.g., Allow calculators, collect written justifications separately, use Q4 as a discussion starter if many students miss it...',
+          templateSlot: 'ADMIN_SCORING_NOTES',
+          inputType: 'textarea',
+        },
       ],
       promptTemplate: {
         templateText:
-          'Please make these final adjustments:\n\n1. Question selection: [KEEP_EDIT_REPLACE]\n2. Reorder the questions: [SEQUENCING]\n3. Add these context-specific elements: [PERSONAL_ADDITIONS]\n\nProvide the final assessment in a format I can use directly, with clear numbering and answer key.',
+          'Transform the revised assessment in this conversation into a final classroom-ready version. Treat the latest revised assessment as the source draft.\n\nMake these final adjustments:\n\nQuestion selection: [KEEP_EDIT_REPLACE].\n\nQuestion sequence: [SEQUENCING].\n\nContext-specific additions: [PERSONAL_ADDITIONS].\n\nAdministration, scoring, or feedback notes: [ADMIN_SCORING_NOTES].\n\nBefore producing the final version, privately use these inputs to remove weak items, reorder the assessment for a sensible student experience, and make the scoring and feedback guidance practical.\n\nThen produce only the final assessment in clear markdown format.\n\nPlease include:\n- a concise assessment title\n- final student-facing directions\n- final numbered questions in the intended order\n- answer key or model answers\n- scoring guidance or point values\n- administration or feedback notes for the instructor\n- a brief explanation of why this final version is well aligned to the assessment purpose',
         slots: [
           {
             id: 'KEEP_EDIT_REPLACE',
@@ -337,6 +374,11 @@ export const assessmentCreationLab: LabConfig = {
             id: 'PERSONAL_ADDITIONS',
             label: 'Personal Additions',
             defaultText: 'context-specific elements to add',
+          },
+          {
+            id: 'ADMIN_SCORING_NOTES',
+            label: 'Administration and Scoring Notes',
+            defaultText: 'final administration, scoring, or feedback notes',
           },
         ],
       },

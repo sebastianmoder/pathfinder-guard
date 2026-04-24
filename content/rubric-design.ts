@@ -35,6 +35,15 @@ export const rubricDesignLab: LabConfig = {
         {
           id: 'q2',
           question:
+            'Who will use this rubric, and what should it help them do — grade consistently, give feedback, guide student revision, or something else?',
+          placeholder:
+            'e.g., First-year students will use it before submitting, and TAs will use it for consistent feedback...',
+          templateSlot: 'STUDENT_CONTEXT',
+          inputType: 'textarea',
+        },
+        {
+          id: 'q3',
+          question:
             'What are the most important qualities that distinguish excellent work from poor work on this assignment?',
           placeholder:
             'e.g., Quality of argument, use of evidence, clarity of writing, proper citations...',
@@ -42,7 +51,7 @@ export const rubricDesignLab: LabConfig = {
           inputType: 'textarea',
         },
         {
-          id: 'q3',
+          id: 'q4',
           question:
             'How many performance levels do you want (e.g., Excellent / Proficient / Developing / Beginning), and what do those levels mean in your context?',
           placeholder:
@@ -51,16 +60,16 @@ export const rubricDesignLab: LabConfig = {
           inputType: 'textarea',
         },
         {
-          id: 'q4',
+          id: 'q5',
           question:
-            'Should the rubric be analytic (separate scores per criterion) or holistic (one overall score)? What serves your feedback goals better?',
+            'Should the rubric be analytic or holistic, and should criteria have weights or point values?',
           placeholder:
-            'e.g., Analytic — I want students to see exactly where they excel and where they need improvement...',
+            'e.g., Analytic, 20 points total, with argument and evidence weighted more heavily than formatting...',
           templateSlot: 'RUBRIC_TYPE',
           inputType: 'textarea',
         },
         {
-          id: 'q5',
+          id: 'q6',
           question:
             'What does the most common "good but not great" submission look like? Describing this helps define the middle of your scale.',
           placeholder:
@@ -71,7 +80,7 @@ export const rubricDesignLab: LabConfig = {
       ],
       promptTemplate: {
         templateText:
-          'I need a [RUBRIC_TYPE] rubric for the following assignment: [ASSIGNMENT_DESCRIPTION].\n\nThe rubric should evaluate these key qualities: [CRITERIA_LIST].\n\nI want these performance levels: [LEVEL_NAMES].\n\nA typical "good but not great" submission looks like: [MIDDLE_DESCRIPTION].\n\nFor each criterion and level, provide specific, observable descriptors that a student could use to understand exactly what is expected.',
+          'You are an experienced educator and rubric designer. Create a rubric that is specific, observable, practical to grade with, and understandable to students.\n\nAssignment or task: [ASSIGNMENT_DESCRIPTION].\n\nRubric users and purpose: [STUDENT_CONTEXT].\n\nThe rubric should evaluate these key qualities: [CRITERIA_LIST].\n\nRubric type, weights, or points: [RUBRIC_TYPE].\n\nPerformance levels and what they mean: [LEVEL_NAMES].\n\nA typical "good but not great" submission looks like: [MIDDLE_DESCRIPTION].\n\nUse these inputs as design requirements. Before drafting, privately translate each key quality into observable evidence, define the middle level first using the typical submission, and then distinguish higher and lower levels by qualitative differences rather than vague adjective changes.\n\nThen produce only the rubric in clear markdown format.\n\nPlease include:\n- a concise rubric title\n- a short statement of what the rubric is designed to evaluate\n- a clean rubric table with criteria, performance levels, descriptors, and points or weights if requested\n- descriptors that name observable features of the work rather than internal states such as "understands" or "demonstrates excellence"\n- brief student-facing notes on how to use the rubric\n- brief grader-facing notes for applying the rubric consistently',
         slots: [
           {
             id: 'RUBRIC_TYPE',
@@ -82,6 +91,11 @@ export const rubricDesignLab: LabConfig = {
             id: 'ASSIGNMENT_DESCRIPTION',
             label: 'Assignment Description',
             defaultText: 'the assignment description',
+          },
+          {
+            id: 'STUDENT_CONTEXT',
+            label: 'Rubric Users and Purpose',
+            defaultText: 'who will use the rubric and why',
           },
           {
             id: 'CRITERIA_LIST',
@@ -191,10 +205,28 @@ export const rubricDesignLab: LabConfig = {
           templateSlot: 'REAL_WORLD_TEST',
           inputType: 'textarea',
         },
+        {
+          id: 'q5',
+          question:
+            'Where would this rubric slow down grading or make feedback harder to give?',
+          placeholder:
+            'e.g., The descriptors are too long to scan quickly, and two criteria overlap so I would double-count the same issue...',
+          templateSlot: 'PRACTICALITY_GAPS',
+          inputType: 'textarea',
+        },
+        {
+          id: 'q6',
+          question:
+            'Which criteria, descriptors, or structural choices are worth keeping because they work well?',
+          placeholder:
+            'e.g., Keep the evidence criterion and the four-level structure, but revise the analysis descriptors...',
+          templateSlot: 'KEEP_ELEMENTS',
+          inputType: 'textarea',
+        },
       ],
       promptTemplate: {
         templateText:
-          'Please revise the rubric based on these issues:\n\n1. Grader consistency: [GRADER_CONSISTENCY]. Make descriptors specific enough that two graders would agree.\n2. Circular language: [CIRCULAR_LANGUAGE]. Replace vague qualifiers with observable, countable, or measurable behaviors.\n3. Student clarity: [STUDENT_CLARITY]. Use language my students will understand.\n4. Real-world alignment: [REAL_WORLD_TEST]. Adjust criteria to capture what I actually value in student work.\n\nFor each revised descriptor, highlight what changed and why.',
+          'You are an experienced educator and rubric designer. Revise the most recent rubric in this conversation. Treat that previous rubric as the draft to improve, not as a prompt to start over from scratch.\n\nI reviewed the draft and identified these issues:\n\nGrader consistency: [GRADER_CONSISTENCY].\n\nCircular or vague language: [CIRCULAR_LANGUAGE].\n\nStudent clarity: [STUDENT_CLARITY].\n\nReal-world alignment with what I value: [REAL_WORLD_TEST].\n\nPractical grading or feedback problems: [PRACTICALITY_GAPS].\n\nCriteria, descriptors, or structural choices worth keeping: [KEEP_ELEMENTS].\n\nBefore revising, privately determine which descriptors need more observable evidence, which levels blur together, which wording students would not understand, and where the rubric needs to be easier to scan and apply during grading.\n\nThen produce only the revised rubric in clear markdown format. Preserve the elements worth keeping, but revise vague, circular, overlapping, impractical, or misaligned parts.\n\nPlease include:\n- the revised rubric table\n- points or weights if they belong in the rubric\n- student-facing wording that is clear and concrete\n- brief grader notes for consistent application\n- a short revision rationale explaining the most important changes',
         slots: [
           {
             id: 'GRADER_CONSISTENCY',
@@ -215,6 +247,16 @@ export const rubricDesignLab: LabConfig = {
             id: 'REAL_WORLD_TEST',
             label: 'Real-World Test',
             defaultText: 'what the rubric misses about your values',
+          },
+          {
+            id: 'PRACTICALITY_GAPS',
+            label: 'Practicality Gaps',
+            defaultText: 'where grading or feedback would be harder',
+          },
+          {
+            id: 'KEEP_ELEMENTS',
+            label: 'Elements to Keep',
+            defaultText: 'criteria or descriptors to preserve',
           },
         ],
       },
@@ -312,10 +354,19 @@ export const rubricDesignLab: LabConfig = {
           templateSlot: 'STUDENT_INSTRUCTIONS',
           inputType: 'textarea',
         },
+        {
+          id: 'q4',
+          question:
+            'What final grading workflow, calibration step, or feedback note would help you use this rubric consistently?',
+          placeholder:
+            'e.g., Before grading, norm with two sample papers; use margin comments only for the two lowest-scoring criteria...',
+          templateSlot: 'GRADING_WORKFLOW',
+          inputType: 'textarea',
+        },
       ],
       promptTemplate: {
         templateText:
-          'Final adjustments to the rubric:\n\n1. The hardest criterion to grade consistently is: [HARDEST_CRITERION]. Add specific indicators or examples to make it clearer.\n2. Emphasis adjustment: [EMPHASIS_CHECK]. Rebalance the rubric to reflect my priorities.\n3. Include these notes for students: [STUDENT_INSTRUCTIONS].\n\nProvide the final rubric in a clean, table format ready for classroom use.',
+          'Transform the revised rubric in this conversation into a final classroom-ready version. Treat the latest revised rubric as the source draft.\n\nMake these final adjustments:\n\nHardest criterion to grade consistently: [HARDEST_CRITERION].\n\nEmphasis or weighting adjustment: [EMPHASIS_CHECK].\n\nStudent-facing instructions or context: [STUDENT_INSTRUCTIONS].\n\nGrading workflow, calibration, or feedback notes: [GRADING_WORKFLOW].\n\nBefore producing the final version, privately use these inputs to clarify the hardest criterion, rebalance emphasis if needed, and make the rubric practical for both student use and grading.\n\nThen produce only the final rubric in clear markdown format.\n\nPlease include:\n- a concise rubric title\n- final student-facing instructions\n- the final rubric table with criteria, levels, descriptors, and points or weights if used\n- concise grader notes or calibration guidance\n- a brief explanation of how the final version supports fair, consistent, useful feedback',
         slots: [
           {
             id: 'HARDEST_CRITERION',
@@ -331,6 +382,11 @@ export const rubricDesignLab: LabConfig = {
             id: 'STUDENT_INSTRUCTIONS',
             label: 'Student Instructions',
             defaultText: 'context to add for students',
+          },
+          {
+            id: 'GRADING_WORKFLOW',
+            label: 'Grading Workflow',
+            defaultText: 'grading workflow or calibration notes',
           },
         ],
       },
