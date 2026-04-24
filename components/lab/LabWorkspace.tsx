@@ -82,9 +82,19 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
   }
 
   const currentIteration = session?.currentIteration ?? 1;
+  const canSendFreeText = messages.some(
+    (message) =>
+      message.role === "assistant" &&
+      !message.isStreaming &&
+      message.content.trim().length > 0,
+  );
 
   const handleSendToAI = (prompt: string) => {
     sendMessage(prompt, currentIteration);
+  };
+
+  const handleSendChatMessage = (message: string) => {
+    sendMessage(message, currentIteration);
   };
 
   // Show lab complete state
@@ -128,7 +138,15 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
             </Link>
           </div>
         }
-        right={<ChatPanel messages={messages} model={model} />}
+        right={
+          <ChatPanel
+            messages={messages}
+            model={model}
+            isStreaming={isStreaming}
+            canSendFreeText={canSendFreeText}
+            onSendMessage={handleSendChatMessage}
+          />
+        }
       />
     );
   }
@@ -144,7 +162,13 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
       }
       right={
         <div className="relative h-full">
-          <ChatPanel messages={messages} model={model} />
+          <ChatPanel
+            messages={messages}
+            model={model}
+            isStreaming={isStreaming}
+            canSendFreeText={canSendFreeText}
+            onSendMessage={handleSendChatMessage}
+          />
           {error && (
             <div className="absolute bottom-16 left-0 right-0 mx-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700 flex items-start gap-2 animate-fade-in-up">
               <svg
