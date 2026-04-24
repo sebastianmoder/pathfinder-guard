@@ -3,6 +3,7 @@
 import { FormEvent, KeyboardEvent, useState } from 'react';
 import { MessageList } from './MessageList';
 import { ModelBadge } from './ModelBadge';
+import { ChatExportButtons } from './ChatExportButtons';
 import { Button } from '@/components/ui/Button';
 import type { ChatMessage } from '@/lib/types';
 
@@ -47,7 +48,7 @@ export function ChatPanel({
         <ModelBadge model={model} />
       </div>
       <MessageList messages={messages} />
-      <div className="p-4 border-t border-guard-border">
+      <div className="p-4 border-t border-guard-border space-y-3">
         {canSendFreeText && onSendMessage ? (
           <form onSubmit={handleSubmit} className="flex items-end gap-2">
             <textarea
@@ -73,6 +74,7 @@ export function ChatPanel({
             Send a prompt from the scaffolding panel...
           </div>
         )}
+        <ChatExportButtons messages={messages} model={model} />
       </div>
     </div>
   );

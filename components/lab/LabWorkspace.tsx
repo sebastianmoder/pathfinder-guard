@@ -170,7 +170,7 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
             onSendMessage={handleSendChatMessage}
           />
           {error && (
-            <div className="absolute bottom-16 left-0 right-0 mx-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700 flex items-start gap-2 animate-fade-in-up">
+            <div className="absolute bottom-28 left-0 right-0 mx-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700 flex items-start gap-2 animate-fade-in-up">
               <svg
                 className="w-4 h-4 mt-0.5 shrink-0"
                 fill="none"
