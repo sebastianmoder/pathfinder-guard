@@ -1,5 +1,6 @@
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const components: Components = {
   h1: ({ children }) => (
@@ -63,6 +64,38 @@ const components: Components = {
     </a>
   ),
   hr: () => <hr className="border-guard-blue-200 my-2" />,
+  table: ({ children }) => (
+    <div className="my-3 max-w-full overflow-x-auto rounded-lg border border-guard-blue-200 bg-white">
+      <table className="min-w-full border-collapse text-left text-xs">
+        {children}
+      </table>
+    </div>
+  ),
+  thead: ({ children }) => (
+    <thead className="bg-guard-blue-100 text-guard-blue-900">
+      {children}
+    </thead>
+  ),
+  tbody: ({ children }) => (
+    <tbody className="divide-y divide-guard-blue-200">
+      {children}
+    </tbody>
+  ),
+  tr: ({ children }) => (
+    <tr className="align-top">
+      {children}
+    </tr>
+  ),
+  th: ({ children }) => (
+    <th className="whitespace-nowrap px-3 py-2 font-semibold">
+      {children}
+    </th>
+  ),
+  td: ({ children }) => (
+    <td className="min-w-32 px-3 py-2 leading-relaxed">
+      {children}
+    </td>
+  ),
 };
 
 interface MarkdownContentProps {
@@ -71,7 +104,7 @@ interface MarkdownContentProps {
 
 export function MarkdownContent({ content }: MarkdownContentProps) {
   return (
-    <ReactMarkdown components={components}>
+    <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
       {content}
     </ReactMarkdown>
   );
