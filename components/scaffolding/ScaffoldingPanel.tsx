@@ -8,15 +8,27 @@ import { ComposePhase } from './ComposePhase';
 import { EvaluatePhase } from './EvaluatePhase';
 import { PhaseNavigation } from './PhaseNavigation';
 import { ContextUploadSection } from './ContextUploadSection';
+import type { ContextUploadMode } from './ContextUploadSection';
 import { useLabSession } from '@/hooks/useLabSession';
 import { usePromptAssembly } from '@/hooks/usePromptAssembly';
-import type { ChatMessage } from '@/lib/types';
+import type { ChatMessage, LabId } from '@/lib/types';
 
 interface ScaffoldingPanelProps {
   onSendToAI: (prompt: string) => void;
   isStreaming: boolean;
   chatMessages: ChatMessage[];
 }
+
+const requiredUploadLabs: Partial<Record<LabId, { mode: ContextUploadMode; message: string }>> = {
+  'assignment-ai-resilience': {
+    mode: 'assignment',
+    message: 'Upload the existing assignment document before continuing.',
+  },
+  'curriculum-revision': {
+    mode: 'curriculum',
+    message: 'Upload the existing curriculum document before continuing.',
+  },
+};
 
 export function ScaffoldingPanel({ onSendToAI, isStreaming, chatMessages }: ScaffoldingPanelProps) {
   const {
@@ -102,10 +114,8 @@ export function ScaffoldingPanel({ onSendToAI, isStreaming, chatMessages }: Scaf
   const nextIteration = labConfig.iterations.find(
     (i) => i.iterationNumber === session.currentIteration + 1
   );
-  const isAssignmentLab = session.labId === 'assignment-ai-resilience';
-  const assignmentUploadMissing = isAssignmentLab && !session.additionalContext;
-  const assignmentUploadRequiredMessage =
-    'Upload the existing assignment document before continuing.';
+  const requiredUpload = requiredUploadLabs[session.labId];
+  const requiredUploadMissing = !!requiredUpload && !session.additionalContext;
 
   return (
     <div className="h-full flex flex-col">
@@ -121,7 +131,7 @@ export function ScaffoldingPanel({ onSendToAI, isStreaming, chatMessages }: Scaf
         </div>
         <ContextUploadSection
           key={session.labId}
-          mode={isAssignmentLab ? 'assignment' : 'general'}
+          mode={requiredUpload?.mode ?? 'general'}
         />
       </div>
 
@@ -207,10 +217,10 @@ export function ScaffoldingPanel({ onSendToAI, isStreaming, chatMessages }: Scaf
           isOptionalNext={nextIteration?.isOptional ?? false}
           isStreaming={isStreaming}
           reflectBlockedReason={
-            assignmentUploadMissing ? assignmentUploadRequiredMessage : undefined
+            requiredUploadMissing ? requiredUpload?.message : undefined
           }
           sendBlockedReason={
-            assignmentUploadMissing ? assignmentUploadRequiredMessage : undefined
+            requiredUploadMissing ? requiredUpload?.message : undefined
           }
           onAdvancePhase={advancePhase}
           onSendToAI={handleSendToAI}

@@ -2,6 +2,7 @@ import type { LabConfig, LabId, LabMeta } from '@/lib/types';
 import { activityPlanningLab } from './activity-planning';
 import { assessmentCreationLab } from './assessment-creation';
 import { assignmentAiResilienceLab } from './assignment-ai-resilience';
+import { curriculumRevisionLab } from './curriculum-revision';
 import { rubricDesignLab } from './rubric-design';
 
 export const labConfigs: Record<LabId, LabConfig> = {
@@ -9,6 +10,7 @@ export const labConfigs: Record<LabId, LabConfig> = {
   'assessment-creation': assessmentCreationLab,
   'rubric-design': rubricDesignLab,
   'assignment-ai-resilience': assignmentAiResilienceLab,
+  'curriculum-revision': curriculumRevisionLab,
 };
 
 export function getLabConfig(labId: string): LabConfig | undefined {
@@ -63,6 +65,18 @@ export const labMetas: LabMeta[] = [
     coreSkill:
       'Assignment redesign for AI use, fairness, process evidence, meaningful assessment',
     icon: 'shield',
+  },
+  {
+    id: 'curriculum-revision',
+    title: 'Revise an Existing Curriculum',
+    description:
+      'Upload an existing curriculum, syllabus, or module sequence and revise it for stronger alignment, coherence, AI literacy, and realistic implementation.',
+    estimatedTime: '35-50 min',
+    learningOutcome:
+      "You'll learn to diagnose curriculum alignment, refine sequencing and learning evidence, and turn a revision into an implementable curriculum plan.",
+    coreSkill:
+      'Curriculum alignment, sequencing, AI literacy integration, implementation planning',
+    icon: 'curriculum',
   },
 ];
 

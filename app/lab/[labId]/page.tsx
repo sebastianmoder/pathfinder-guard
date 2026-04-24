@@ -9,6 +9,7 @@ const validLabIds: LabId[] = [
   'assessment-creation',
   'rubric-design',
   'assignment-ai-resilience',
+  'curriculum-revision',
 ];
 
 interface LabPageProps {
