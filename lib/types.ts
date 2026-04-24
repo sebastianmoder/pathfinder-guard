@@ -102,6 +102,13 @@ export interface ChecklistState {
   [checklistItemId: string]: boolean;
 }
 
+export interface ContextDocument {
+  id: string;
+  fileName: string;
+  text: string;
+  uploadedAt: number;
+}
+
 export interface IterationState {
   iterationNumber: number;
   currentPhase: Phase;
@@ -121,6 +128,7 @@ export interface LabSessionState {
   lastActivityAt: number;
   additionalContext?: string | null;
   additionalContextFileName?: string | null;
+  additionalContextDocuments?: ContextDocument[];
 }
 
 export interface SessionHistoryEntry {

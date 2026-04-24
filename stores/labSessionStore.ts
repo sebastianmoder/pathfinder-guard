@@ -3,6 +3,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type {
+  ContextDocument,
   LabId,
   LabSessionState,
   IterationState,
@@ -25,6 +26,56 @@ interface LabSessionStore {
   completeLab: () => void;
   resetSession: () => void;
   setAdditionalContext: (text: string | null, fileName: string | null) => void;
+  addAdditionalContextDocument: (text: string, fileName: string) => void;
+  removeAdditionalContextDocument: (documentId: string) => void;
+}
+
+function buildAdditionalContext(documents: ContextDocument[]): string | null {
+  if (documents.length === 0) return null;
+
+  return documents
+    .map((document, index) =>
+      `Context document ${index + 1}: ${document.fileName}\n\n${document.text}`
+    )
+    .join('\n\n---\n\n');
+}
+
+function buildContextFileName(documents: ContextDocument[]): string | null {
+  if (documents.length === 0) return null;
+  if (documents.length === 1) return documents[0].fileName;
+  return `${documents.length} context documents`;
+}
+
+function getContextDocuments(session: LabSessionState): ContextDocument[] {
+  if (session.additionalContextDocuments?.length) {
+    return session.additionalContextDocuments;
+  }
+
+  if (!session.additionalContext) {
+    return [];
+  }
+
+  return [
+    {
+      id: 'legacy-context-document',
+      fileName: session.additionalContextFileName ?? 'Context document',
+      text: session.additionalContext,
+      uploadedAt: session.lastActivityAt,
+    },
+  ];
+}
+
+function applyContextDocuments(
+  session: LabSessionState,
+  documents: ContextDocument[]
+): LabSessionState {
+  return {
+    ...session,
+    lastActivityAt: Date.now(),
+    additionalContext: buildAdditionalContext(documents),
+    additionalContextFileName: buildContextFileName(documents),
+    additionalContextDocuments: documents,
+  };
 }
 
 function createIterationState(iterationNumber: number): IterationState {
@@ -237,13 +288,50 @@ export const useLabSessionStore = create<LabSessionStore>()(
   setAdditionalContext: (text, fileName) => {
     const { session } = get();
     if (!session) return;
+    const documents =
+      text && fileName
+        ? [
+            {
+              id: crypto.randomUUID(),
+              fileName,
+              text,
+              uploadedAt: Date.now(),
+            },
+          ]
+        : [];
     set({
-      session: {
-        ...session,
-        lastActivityAt: Date.now(),
-        additionalContext: text,
-        additionalContextFileName: fileName,
-      },
+      session: applyContextDocuments(session, documents),
+    });
+  },
+
+  addAdditionalContextDocument: (text, fileName) => {
+    const { session } = get();
+    if (!session) return;
+    const documents = getContextDocuments(session);
+    if (documents.length >= 5) return;
+
+    set({
+      session: applyContextDocuments(session, [
+        ...documents,
+        {
+          id: crypto.randomUUID(),
+          fileName,
+          text,
+          uploadedAt: Date.now(),
+        },
+      ]),
+    });
+  },
+
+  removeAdditionalContextDocument: (documentId) => {
+    const { session } = get();
+    if (!session) return;
+    const documents = getContextDocuments(session).filter(
+      (document) => document.id !== documentId
+    );
+
+    set({
+      session: applyContextDocuments(session, documents),
     });
   },
 

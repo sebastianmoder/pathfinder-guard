@@ -94,7 +94,8 @@ This means saved work is tied to the same browser and device. Clearing browser d
 The scaffolding panel supports optional context uploads to enrich prompts.
 
 - Supported types: `pdf`, `docx`, `txt`, `md`
-- Maximum file size: `20 MB`
+- Maximum file size: `20 MB` per file
+- Maximum documents: `5`
 - Uploaded files are parsed through `/api/parse-file` and normalized into plain text
 
 ## Key Routes
