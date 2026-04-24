@@ -8,8 +8,8 @@ export type LabId =
   | 'activity-planning'
   | 'assessment-creation'
   | 'rubric-design'
-  | 'assignment-ai-resilience'
-  | 'curriculum-revision';
+  | 'curriculum-revision'
+  | 'assignment-ai-resilience';
 
 // ============================================================
 // LAB CONTENT TYPES (static config, not runtime state)

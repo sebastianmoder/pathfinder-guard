@@ -9,8 +9,8 @@ export const labConfigs: Record<LabId, LabConfig> = {
   'activity-planning': activityPlanningLab,
   'assessment-creation': assessmentCreationLab,
   'rubric-design': rubricDesignLab,
-  'assignment-ai-resilience': assignmentAiResilienceLab,
   'curriculum-revision': curriculumRevisionLab,
+  'assignment-ai-resilience': assignmentAiResilienceLab,
 };
 
 export function getLabConfig(labId: string): LabConfig | undefined {
@@ -55,18 +55,6 @@ export const labMetas: LabMeta[] = [
     icon: 'rubric',
   },
   {
-    id: 'assignment-ai-resilience',
-    title: 'Revise an Assignment for AI Use',
-    description:
-      'Upload an existing assignment and revise it so student AI use is handled fairly while preserving meaningful learning assessment.',
-    estimatedTime: '30-45 min',
-    learningOutcome:
-      "You'll learn to identify AI-vulnerable assignment design, define fair AI-use expectations, and revise tasks to assess meaningful student learning.",
-    coreSkill:
-      'Assignment redesign for AI use, fairness, process evidence, meaningful assessment',
-    icon: 'shield',
-  },
-  {
     id: 'curriculum-revision',
     title: 'Revise an Existing Curriculum',
     description:
@@ -77,6 +65,18 @@ export const labMetas: LabMeta[] = [
     coreSkill:
       'Curriculum alignment, sequencing, AI literacy integration, implementation planning',
     icon: 'curriculum',
+  },
+  {
+    id: 'assignment-ai-resilience',
+    title: 'Revise an Assignment for AI Use',
+    description:
+      'Upload an existing assignment and revise it so student AI use is handled fairly while preserving meaningful learning assessment.',
+    estimatedTime: '30-45 min',
+    learningOutcome:
+      "You'll learn to identify AI-vulnerable assignment design, define fair AI-use expectations, and revise tasks to assess meaningful student learning.",
+    coreSkill:
+      'Assignment redesign for AI use, fairness, process evidence, meaningful assessment',
+    icon: 'shield',
   },
 ];
 
