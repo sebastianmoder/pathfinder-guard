@@ -4,7 +4,12 @@ import { LabWorkspace } from '@/components/lab/LabWorkspace';
 import { getLabMeta } from '@/content/labs';
 import type { LabId } from '@/lib/types';
 
-const validLabIds: LabId[] = ['activity-planning', 'assessment-creation', 'rubric-design'];
+const validLabIds: LabId[] = [
+  'activity-planning',
+  'assessment-creation',
+  'rubric-design',
+  'assignment-ai-resilience',
+];
 
 interface LabPageProps {
   params: Promise<{ labId: string }>;

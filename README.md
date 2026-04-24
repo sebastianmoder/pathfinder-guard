@@ -11,6 +11,7 @@ GUARD helps educators practice using AI critically through structured labs:
 - `Plan a Class Activity`
 - `Create a Learning Assessment`
 - `Design a Rubric`
+- `Revise an Assignment for AI Use`
 
 Each lab is broken into guided iterations. Users answer Socratic scaffolding questions, watch those answers assemble into a prompt template, send the prompt to a live model, and then evaluate the output for alignment, rigor, and common AI failure modes.
 
@@ -18,7 +19,7 @@ Each lab is broken into guided iterations. Users answer Socratic scaffolding que
 
 - Split-panel lab interface with scaffolding on the left and live chat on the right
 - Four-phase workflow per iteration: `Reflect -> Compose -> Generate -> Evaluate`
-- Three built-in educator labs with domain-specific prompts and evaluation checklists
+- Four built-in educator labs with domain-specific prompts and evaluation checklists
 - Prompt assembly that turns reflection answers into an editable prompt template
 - Streaming chat responses via OpenRouter-compatible models
 - Optional BYOK flow on the Settings page for model choice
@@ -69,7 +70,7 @@ Without either of those, `/api/chat` will return an error.
 
 ## Using the App
 
-1. Start from the landing page and choose one of the three labs.
+1. Start from the landing page and choose one of the four labs.
 2. Answer the reflection questions in the left panel.
 3. Review or edit the assembled prompt in the compose phase.
 4. Send the prompt to the model and inspect the streamed response.
@@ -121,6 +122,7 @@ components/
 content/
   activity-planning.ts
   assessment-creation.ts
+  assignment-ai-resilience.ts
   rubric-design.ts
 hooks/
 stores/

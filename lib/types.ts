@@ -4,7 +4,11 @@
 
 export type Phase = 'reflect' | 'compose' | 'generate' | 'evaluate';
 
-export type LabId = 'activity-planning' | 'assessment-creation' | 'rubric-design';
+export type LabId =
+  | 'activity-planning'
+  | 'assessment-creation'
+  | 'rubric-design'
+  | 'assignment-ai-resilience';
 
 // ============================================================
 // LAB CONTENT TYPES (static config, not runtime state)

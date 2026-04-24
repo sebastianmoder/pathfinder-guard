@@ -5,11 +5,16 @@ import { useLabSessionStore } from '@/stores/labSessionStore';
 
 type UploadState = 'idle' | 'loading' | 'done' | 'error';
 
-export function ContextUploadSection() {
+interface ContextUploadSectionProps {
+  mode?: 'general' | 'assignment';
+}
+
+export function ContextUploadSection({ mode = 'general' }: ContextUploadSectionProps) {
   const session = useLabSessionStore((s) => s.session);
   const setAdditionalContext = useLabSessionStore((s) => s.setAdditionalContext);
 
-  const [isExpanded, setIsExpanded] = useState(false);
+  const isAssignmentMode = mode === 'assignment';
+  const [isExpanded, setIsExpanded] = useState(isAssignmentMode);
   const [uploadState, setUploadState] = useState<UploadState>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [isDragging, setIsDragging] = useState(false);
@@ -17,6 +22,16 @@ export function ContextUploadSection() {
 
   const hasContext = !!(session?.additionalContext);
   const fileName = session?.additionalContextFileName ?? '';
+  const panelTitle = isAssignmentMode ? 'Upload existing assignment' : 'Add context document';
+  const collapsedLabel = isAssignmentMode
+    ? 'Upload existing assignment'
+    : 'Add context document (optional)';
+  const helperText = isAssignmentMode
+    ? 'Upload the assignment brief, instructions, or prompt students receive. The extracted text will be shared with the AI as the source assignment.'
+    : 'Upload a curriculum excerpt, lecture notes, or any other document. The content will be shared with the AI as additional context.';
+  const activeText = isAssignmentMode
+    ? 'Assignment document active — included in all AI requests'
+    : 'Context document active — included in all AI requests';
 
   const processFile = useCallback(
     async (file: File) => {
@@ -78,14 +93,14 @@ export function ContextUploadSection() {
           <button
             onClick={handleRemove}
             className="shrink-0 text-guard-blue-400 hover:text-red-500 transition-colors"
-            title="Remove context document"
+            title={isAssignmentMode ? 'Remove assignment document' : 'Remove context document'}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-        <p className="text-xs text-guard-blue-500 mt-1 pl-6">Context document active — included in all AI requests</p>
+        <p className="text-xs text-guard-blue-500 mt-1 pl-6">{activeText}</p>
       </div>
     );
   }
@@ -100,7 +115,7 @@ export function ContextUploadSection() {
           <svg className="w-3.5 h-3.5 group-hover:text-guard-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
           </svg>
-          Add context document (optional)
+          {collapsedLabel}
         </button>
       </div>
     );
@@ -109,7 +124,7 @@ export function ContextUploadSection() {
   return (
     <div className="mx-6 mt-4 rounded-lg border border-guard-blue-200 bg-guard-blue-50/50">
       <div className="flex items-center justify-between px-3 py-2 border-b border-guard-blue-100">
-        <span className="text-xs font-medium text-guard-blue-700">Add context document</span>
+        <span className="text-xs font-medium text-guard-blue-700">{panelTitle}</span>
         <button
           onClick={() => { setIsExpanded(false); setUploadState('idle'); setErrorMessage(''); }}
           className="text-guard-blue-400 hover:text-guard-blue-600 transition-colors"
@@ -122,7 +137,7 @@ export function ContextUploadSection() {
 
       <div className="p-3">
         <p className="text-xs text-guard-blue-500 mb-2.5">
-          Upload a curriculum excerpt, lecture notes, or any other document. The content will be shared with the AI as additional context.
+          {helperText}
         </p>
 
         {uploadState === 'loading' ? (

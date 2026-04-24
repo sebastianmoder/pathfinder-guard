@@ -115,7 +115,10 @@ export function ScaffoldingPanel({ onSendToAI, isStreaming, chatMessages }: Scaf
           />
           <PhaseIndicator currentPhase={currentIterationState.currentPhase} />
         </div>
-        <ContextUploadSection />
+        <ContextUploadSection
+          key={session.labId}
+          mode={session.labId === 'assignment-ai-resilience' ? 'assignment' : 'general'}
+        />
       </div>
 
       <div className="flex-1 overflow-y-auto p-6 animate-fade-in-up" key={`${session.currentIteration}-${currentIterationState.currentPhase}`}>

@@ -9,10 +9,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="max-w-5xl mx-auto px-6">
+      <main className="max-w-6xl mx-auto px-6">
         <HeroSection />
         <section className="pb-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
             {labMetas.map((lab) => (
               <LabCard key={lab.id} lab={lab} />
             ))}

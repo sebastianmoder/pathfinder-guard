@@ -1,12 +1,14 @@
 import type { LabConfig, LabId, LabMeta } from '@/lib/types';
 import { activityPlanningLab } from './activity-planning';
 import { assessmentCreationLab } from './assessment-creation';
+import { assignmentAiResilienceLab } from './assignment-ai-resilience';
 import { rubricDesignLab } from './rubric-design';
 
 export const labConfigs: Record<LabId, LabConfig> = {
   'activity-planning': activityPlanningLab,
   'assessment-creation': assessmentCreationLab,
   'rubric-design': rubricDesignLab,
+  'assignment-ai-resilience': assignmentAiResilienceLab,
 };
 
 export function getLabConfig(labId: string): LabConfig | undefined {
@@ -49,6 +51,18 @@ export const labMetas: LabMeta[] = [
     coreSkill:
       'Specificity in prompting, recognizing vague AI language, adapting outputs for practical use',
     icon: 'rubric',
+  },
+  {
+    id: 'assignment-ai-resilience',
+    title: 'Revise an Assignment for AI Use',
+    description:
+      'Upload an existing assignment and revise it so student AI use is handled fairly while preserving meaningful learning assessment.',
+    estimatedTime: '30-45 min',
+    learningOutcome:
+      "You'll learn to identify AI-vulnerable assignment design, define fair AI-use expectations, and revise tasks to assess meaningful student learning.",
+    coreSkill:
+      'Assignment redesign for AI use, fairness, process evidence, meaningful assessment',
+    icon: 'shield',
   },
 ];
 
