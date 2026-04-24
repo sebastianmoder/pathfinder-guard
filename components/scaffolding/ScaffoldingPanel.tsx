@@ -102,6 +102,10 @@ export function ScaffoldingPanel({ onSendToAI, isStreaming, chatMessages }: Scaf
   const nextIteration = labConfig.iterations.find(
     (i) => i.iterationNumber === session.currentIteration + 1
   );
+  const isAssignmentLab = session.labId === 'assignment-ai-resilience';
+  const assignmentUploadMissing = isAssignmentLab && !session.additionalContext;
+  const assignmentUploadRequiredMessage =
+    'Upload the existing assignment document before continuing.';
 
   return (
     <div className="h-full flex flex-col">
@@ -117,7 +121,7 @@ export function ScaffoldingPanel({ onSendToAI, isStreaming, chatMessages }: Scaf
         </div>
         <ContextUploadSection
           key={session.labId}
-          mode={session.labId === 'assignment-ai-resilience' ? 'assignment' : 'general'}
+          mode={isAssignmentLab ? 'assignment' : 'general'}
         />
       </div>
 
@@ -202,6 +206,12 @@ export function ScaffoldingPanel({ onSendToAI, isStreaming, chatMessages }: Scaf
           totalIterations={totalIterations}
           isOptionalNext={nextIteration?.isOptional ?? false}
           isStreaming={isStreaming}
+          reflectBlockedReason={
+            assignmentUploadMissing ? assignmentUploadRequiredMessage : undefined
+          }
+          sendBlockedReason={
+            assignmentUploadMissing ? assignmentUploadRequiredMessage : undefined
+          }
           onAdvancePhase={advancePhase}
           onSendToAI={handleSendToAI}
           onAdvanceIteration={advanceIteration}

@@ -9,6 +9,8 @@ interface PhaseNavigationProps {
   totalIterations: number;
   isOptionalNext: boolean;
   isStreaming: boolean;
+  reflectBlockedReason?: string;
+  sendBlockedReason?: string;
   onAdvancePhase: () => void;
   onSendToAI: () => void;
   onAdvanceIteration: () => void;
@@ -21,6 +23,8 @@ export function PhaseNavigation({
   totalIterations,
   isOptionalNext,
   isStreaming,
+  reflectBlockedReason,
+  sendBlockedReason,
   onAdvancePhase,
   onSendToAI,
   onAdvanceIteration,
@@ -28,20 +32,40 @@ export function PhaseNavigation({
 }: PhaseNavigationProps) {
   if (currentPhase === 'reflect') {
     return (
-      <div className="pt-4 border-t border-guard-border">
-        <Button onClick={onAdvancePhase} size="lg" className="w-full">
+      <div className="pt-4 border-t border-guard-border space-y-2">
+        <Button
+          onClick={onAdvancePhase}
+          size="lg"
+          className="w-full"
+          disabled={!!reflectBlockedReason}
+        >
           Continue to Compose
         </Button>
+        {reflectBlockedReason && (
+          <p className="text-xs text-guard-error text-center">
+            {reflectBlockedReason}
+          </p>
+        )}
       </div>
     );
   }
 
   if (currentPhase === 'compose') {
     return (
-      <div className="pt-4 border-t border-guard-border">
-        <Button onClick={onSendToAI} size="lg" className="w-full">
+      <div className="pt-4 border-t border-guard-border space-y-2">
+        <Button
+          onClick={onSendToAI}
+          size="lg"
+          className="w-full"
+          disabled={!!sendBlockedReason}
+        >
           Send to AI
         </Button>
+        {sendBlockedReason && (
+          <p className="text-xs text-guard-error text-center">
+            {sendBlockedReason}
+          </p>
+        )}
       </div>
     );
   }
