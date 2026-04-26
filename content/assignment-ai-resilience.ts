@@ -379,10 +379,19 @@ export const assignmentAiResilienceLab: LabConfig = {
           templateSlot: 'STUDENT_SUPPORT',
           inputType: 'textarea',
         },
+        {
+          id: 'q6',
+          question:
+            'What has typically worked well in your past teaching experiences that this final assignment should preserve or build on?',
+          placeholder:
+            'e.g., Short proposal checkpoints, annotated examples, clear submission checklists, in-class time to test ideas...',
+          templateSlot: 'PAST_TEACHING_SUCCESSES',
+          inputType: 'textarea',
+        },
       ],
       promptTemplate: {
         templateText:
-          'Transform the revised assignment in this conversation into a final classroom-ready assignment package. Treat the latest revised assignment as the source draft and continue to respect the uploaded original assignment and stated teaching context.\n\nMake these final adjustments:\n\nStudent-facing tone and wording: [STUDENT_VOICE].\n\nExact AI acknowledgement, citation, or disclosure language: [DISCLOSURE_LANGUAGE].\n\nCheckpoints, in-class components, oral explanations, or feedback moments: [CHECKPOINTS].\n\nRubric, grading, or institutional policy alignment: [RUBRIC_POLICY_ALIGNMENT].\n\nStudent support needed before they begin: [STUDENT_SUPPORT].\n\nBefore producing the final version, privately remove redundant safeguards, clarify ambiguous AI-use rules, and ensure the final assignment remains fair, assessable, and understandable to students.\n\nThen produce only the final assignment package in clear markdown format.\n\nPlease include:\n- final assignment title and overview\n- final student-facing directions\n- permitted, required, discouraged, and prohibited AI uses where relevant\n- exact student AI acknowledgement or disclosure template\n- submission checklist\n- process or checkpoint requirements\n- concise grading criteria or rubric-alignment notes\n- instructor implementation notes\n- student support or transparency notes to provide before launch\n- a brief final rationale explaining how this version withstands or leverages AI use while preserving meaningful learning assessment',
+          'Transform the revised assignment in this conversation into a final classroom-ready assignment package. Treat the latest revised assignment as the source draft and continue to respect the uploaded original assignment and stated teaching context.\n\nMake these final adjustments:\n\nStudent-facing tone and wording: [STUDENT_VOICE].\n\nExact AI acknowledgement, citation, or disclosure language: [DISCLOSURE_LANGUAGE].\n\nCheckpoints, in-class components, oral explanations, or feedback moments: [CHECKPOINTS].\n\nRubric, grading, or institutional policy alignment: [RUBRIC_POLICY_ALIGNMENT].\n\nStudent support needed before they begin: [STUDENT_SUPPORT].\n\nAssignment structures, support routines, or teaching moves that have typically worked well for me: [PAST_TEACHING_SUCCESSES].\n\nBefore producing the final version, privately remove redundant safeguards, clarify ambiguous AI-use rules, ensure the final assignment remains fair, assessable, and understandable to students, and build on the past teaching successes where they strengthen student learning, transparency, or implementation.\n\nThen produce only the final assignment package in clear markdown format.\n\nPlease include:\n- final assignment title and overview\n- final student-facing directions\n- permitted, required, discouraged, and prohibited AI uses where relevant\n- exact student AI acknowledgement or disclosure template\n- submission checklist\n- process or checkpoint requirements\n- concise grading criteria or rubric-alignment notes\n- instructor implementation notes\n- student support or transparency notes to provide before launch\n- a brief final rationale explaining how this version withstands or leverages AI use while preserving meaningful learning assessment',
         slots: [
           {
             id: 'STUDENT_VOICE',
@@ -408,6 +417,11 @@ export const assignmentAiResilienceLab: LabConfig = {
             id: 'STUDENT_SUPPORT',
             label: 'Student Support',
             defaultText: 'support students need before beginning',
+          },
+          {
+            id: 'PAST_TEACHING_SUCCESSES',
+            label: 'Past Teaching Successes',
+            defaultText: 'assignment practices that have worked well before',
           },
         ],
       },

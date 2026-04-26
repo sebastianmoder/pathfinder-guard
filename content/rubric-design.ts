@@ -363,10 +363,19 @@ export const rubricDesignLab: LabConfig = {
           templateSlot: 'GRADING_WORKFLOW',
           inputType: 'textarea',
         },
+        {
+          id: 'q5',
+          question:
+            'What has typically worked well in your past teaching experiences that this final rubric should preserve or build on?',
+          placeholder:
+            'e.g., Short descriptors students can scan, one concrete example per criterion, calibration with two sample submissions...',
+          templateSlot: 'PAST_TEACHING_SUCCESSES',
+          inputType: 'textarea',
+        },
       ],
       promptTemplate: {
         templateText:
-          'Transform the revised rubric in this conversation into a final classroom-ready version. Treat the latest revised rubric as the source draft.\n\nMake these final adjustments:\n\nHardest criterion to grade consistently: [HARDEST_CRITERION].\n\nEmphasis or weighting adjustment: [EMPHASIS_CHECK].\n\nStudent-facing instructions or context: [STUDENT_INSTRUCTIONS].\n\nGrading workflow, calibration, or feedback notes: [GRADING_WORKFLOW].\n\nBefore producing the final version, privately use these inputs to clarify the hardest criterion, rebalance emphasis if needed, and make the rubric practical for both student use and grading.\n\nThen produce only the final rubric in clear markdown format.\n\nPlease include:\n- a concise rubric title\n- final student-facing instructions\n- the final rubric table with criteria, levels, descriptors, and points or weights if used\n- concise grader notes or calibration guidance\n- a brief explanation of how the final version supports fair, consistent, useful feedback',
+          'Transform the revised rubric in this conversation into a final classroom-ready version. Treat the latest revised rubric as the source draft.\n\nMake these final adjustments:\n\nHardest criterion to grade consistently: [HARDEST_CRITERION].\n\nEmphasis or weighting adjustment: [EMPHASIS_CHECK].\n\nStudent-facing instructions or context: [STUDENT_INSTRUCTIONS].\n\nGrading workflow, calibration, or feedback notes: [GRADING_WORKFLOW].\n\nRubric practices, feedback habits, or grading workflows that have typically worked well for me: [PAST_TEACHING_SUCCESSES].\n\nBefore producing the final version, privately use these inputs to clarify the hardest criterion, rebalance emphasis if needed, make the rubric practical for both student use and grading, and build on the rubric or feedback practices that have worked well in the instructor\'s previous teaching.\n\nThen produce only the final rubric in clear markdown format.\n\nPlease include:\n- a concise rubric title\n- final student-facing instructions\n- the final rubric table with criteria, levels, descriptors, and points or weights if used\n- concise grader notes or calibration guidance\n- a brief explanation of how the final version supports fair, consistent, useful feedback',
         slots: [
           {
             id: 'HARDEST_CRITERION',
@@ -387,6 +396,11 @@ export const rubricDesignLab: LabConfig = {
             id: 'GRADING_WORKFLOW',
             label: 'Grading Workflow',
             defaultText: 'grading workflow or calibration notes',
+          },
+          {
+            id: 'PAST_TEACHING_SUCCESSES',
+            label: 'Past Teaching Successes',
+            defaultText: 'rubric or feedback practices that have worked well before',
           },
         ],
       },

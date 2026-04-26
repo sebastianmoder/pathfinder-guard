@@ -312,10 +312,19 @@ export const activityPlanningLab: LabConfig = {
           templateSlot: 'PURPOSE_EXPLANATION',
           inputType: 'textarea',
         },
+        {
+          id: 'q4',
+          question:
+            'What has typically worked well in your past teaching experiences that this final activity should preserve or build on?',
+          placeholder:
+            'e.g., Short individual predictions before discussion, concrete examples from student interests, visible worked examples...',
+          templateSlot: 'PAST_TEACHING_SUCCESSES',
+          inputType: 'textarea',
+        },
       ],
       promptTemplate: {
         templateText:
-          'Your task is to transform the revised classroom activity in this conversation into a final version that reflects the instructor\'s professional judgment, teaching style, and practical classroom needs. Treat the latest revised activity as the source draft.\n\nI have reviewed the current version of the activity and want to make final adjustments before using it in my teaching.\n\nWhat I would still change before using it in class: [CHANGES_NEEDED].\n\nWhat feels authentic to my teaching style and what still feels generic or AI-generated: [STYLE_ASSESSMENT].\n\nThe single most important purpose of this activity is: [PURPOSE_EXPLANATION].\n\nBefore producing the final version, privately sort the requested changes into clarity, pedagogy, classroom logistics, and teaching voice. Use the stated core purpose as the main design filter: every component should support that purpose, and anything distracting or overly elaborate should be removed or simplified.\n\nThen produce a final polished version of the activity that is ready for immediate classroom use or sharing with a colleague. Preserve the pedagogical strength of the revised draft, but make the instructions, transitions, teacher language, and facilitation notes feel realistic and instructor-owned rather than AI-generated.\n\nYour final output should consist only of the finished activity plan in clear markdown format with section headers.\n\nPlease include:\n- a concise activity title\n- a short statement of the activity\'s core purpose\n- final step-by-step implementation instructions\n- student-facing prompts or directions where useful\n- materials and setup needed\n- timing and logistics\n- final teacher notes or facilitation tips\n- a brief explanation of why this version is especially well suited to my classroom and teaching approach',
+          'Your task is to transform the revised classroom activity in this conversation into a final version that reflects the instructor\'s professional judgment, teaching style, and practical classroom needs. Treat the latest revised activity as the source draft.\n\nI have reviewed the current version of the activity and want to make final adjustments before using it in my teaching.\n\nWhat I would still change before using it in class: [CHANGES_NEEDED].\n\nWhat feels authentic to my teaching style and what still feels generic or AI-generated: [STYLE_ASSESSMENT].\n\nThe single most important purpose of this activity is: [PURPOSE_EXPLANATION].\n\nTeaching practices, routines, or activity features that have typically worked well for me: [PAST_TEACHING_SUCCESSES].\n\nBefore producing the final version, privately sort the requested changes into clarity, pedagogy, classroom logistics, and teaching voice. Use the stated core purpose as the main design filter: every component should support that purpose, and anything distracting or overly elaborate should be removed or simplified. Build on the reported past teaching successes when choosing facilitation moves, examples, pacing, interaction patterns, and teacher notes.\n\nThen produce a final polished version of the activity that is ready for immediate classroom use or sharing with a colleague. Preserve the pedagogical strength of the revised draft, but make the instructions, transitions, teacher language, and facilitation notes feel realistic and instructor-owned rather than AI-generated.\n\nYour final output should consist only of the finished activity plan in clear markdown format with section headers.\n\nPlease include:\n- a concise activity title\n- a short statement of the activity\'s core purpose\n- final step-by-step implementation instructions\n- student-facing prompts or directions where useful\n- materials and setup needed\n- timing and logistics\n- final teacher notes or facilitation tips\n- a brief explanation of why this version is especially well suited to my classroom and teaching approach',
         slots: [
           {
             id: 'CHANGES_NEEDED',
@@ -331,6 +340,11 @@ export const activityPlanningLab: LabConfig = {
             id: 'PURPOSE_EXPLANATION',
             label: 'Purpose Explanation',
             defaultText: 'how you would explain this activity',
+          },
+          {
+            id: 'PAST_TEACHING_SUCCESSES',
+            label: 'Past Teaching Successes',
+            defaultText: 'teaching practices that have worked well before',
           },
         ],
       },

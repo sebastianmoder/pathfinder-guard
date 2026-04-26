@@ -355,10 +355,19 @@ export const assessmentCreationLab: LabConfig = {
           templateSlot: 'ADMIN_SCORING_NOTES',
           inputType: 'textarea',
         },
+        {
+          id: 'q5',
+          question:
+            'What has typically worked well in your past teaching experiences that this final assessment should preserve or build on?',
+          placeholder:
+            'e.g., Starting with a confidence-building item, using brief justification prompts, giving fast whole-class feedback on common errors...',
+          templateSlot: 'PAST_TEACHING_SUCCESSES',
+          inputType: 'textarea',
+        },
       ],
       promptTemplate: {
         templateText:
-          'Transform the revised assessment in this conversation into a final classroom-ready version. Treat the latest revised assessment as the source draft.\n\nMake these final adjustments:\n\nQuestion selection: [KEEP_EDIT_REPLACE].\n\nQuestion sequence: [SEQUENCING].\n\nContext-specific additions: [PERSONAL_ADDITIONS].\n\nAdministration, scoring, or feedback notes: [ADMIN_SCORING_NOTES].\n\nBefore producing the final version, privately use these inputs to remove weak items, reorder the assessment for a sensible student experience, and make the scoring and feedback guidance practical.\n\nThen produce only the final assessment in clear markdown format.\n\nPlease include:\n- a concise assessment title\n- final student-facing directions\n- final numbered questions in the intended order\n- answer key or model answers\n- scoring guidance or point values\n- administration or feedback notes for the instructor\n- a brief explanation of why this final version is well aligned to the assessment purpose',
+          'Transform the revised assessment in this conversation into a final classroom-ready version. Treat the latest revised assessment as the source draft.\n\nMake these final adjustments:\n\nQuestion selection: [KEEP_EDIT_REPLACE].\n\nQuestion sequence: [SEQUENCING].\n\nContext-specific additions: [PERSONAL_ADDITIONS].\n\nAdministration, scoring, or feedback notes: [ADMIN_SCORING_NOTES].\n\nAssessment practices, feedback routines, or question structures that have typically worked well for me: [PAST_TEACHING_SUCCESSES].\n\nBefore producing the final version, privately use these inputs to remove weak items, reorder the assessment for a sensible student experience, make the scoring and feedback guidance practical, and build on the assessment practices that have worked well in the instructor\'s previous teaching.\n\nThen produce only the final assessment in clear markdown format.\n\nPlease include:\n- a concise assessment title\n- final student-facing directions\n- final numbered questions in the intended order\n- answer key or model answers\n- scoring guidance or point values\n- administration or feedback notes for the instructor\n- a brief explanation of why this final version is well aligned to the assessment purpose',
         slots: [
           {
             id: 'KEEP_EDIT_REPLACE',
@@ -379,6 +388,11 @@ export const assessmentCreationLab: LabConfig = {
             id: 'ADMIN_SCORING_NOTES',
             label: 'Administration and Scoring Notes',
             defaultText: 'final administration, scoring, or feedback notes',
+          },
+          {
+            id: 'PAST_TEACHING_SUCCESSES',
+            label: 'Past Teaching Successes',
+            defaultText: 'assessment practices that have worked well before',
           },
         ],
       },

@@ -392,10 +392,19 @@ export const curriculumRevisionLab: LabConfig = {
           templateSlot: 'FINAL_ADJUSTMENTS',
           inputType: 'textarea',
         },
+        {
+          id: 'q7',
+          question:
+            'What has typically worked well in your past teaching experiences that this final curriculum should preserve or build on?',
+          placeholder:
+            'e.g., Weekly low-stakes checkpoints, project milestones with short feedback cycles, examples before independent work...',
+          templateSlot: 'PAST_TEACHING_SUCCESSES',
+          inputType: 'textarea',
+        },
       ],
       promptTemplate: {
         templateText:
-          'Transform the revised curriculum in this conversation into a final implementation-ready curriculum package. Treat the latest revised curriculum as the source draft and continue to respect the uploaded original curriculum and stated constraints.\n\nFinal format needed: [FINAL_FORMAT].\n\nExact AI-use, AI literacy, academic integrity, or tool access language: [AI_POLICY_LANGUAGE].\n\nImplementation details to make explicit: [IMPLEMENTATION_DETAILS].\n\nPolicy, accreditation, department, or program alignment: [POLICY_ALIGNMENT].\n\nEvaluation plan after implementation: [EVALUATION_PLAN].\n\nFinal adjustments to simplify, clarify, or remove: [FINAL_ADJUSTMENTS].\n\nBefore producing the final version, privately remove redundant language, check feasibility, clarify AI-related expectations, and ensure the curriculum remains aligned, inclusive, and implementable.\n\nThen produce only the final curriculum package in clear markdown format.\n\nPlease include:\n- final curriculum title and brief overview\n- final outcomes or capability statements\n- final sequence, module map, weekly outline, or requested format\n- aligned learning activities, assessment evidence, and feedback moments\n- exact AI-use, AI literacy, academic integrity, or tool access language where relevant\n- student support and accessibility notes\n- instructor implementation notes and rollout checklist\n- policy, accreditation, or program-alignment notes\n- plan for evaluating the revision after delivery\n- a brief final rationale explaining how this version improves learning progression, coherence, and feasibility',
+          'Transform the revised curriculum in this conversation into a final implementation-ready curriculum package. Treat the latest revised curriculum as the source draft and continue to respect the uploaded original curriculum and stated constraints.\n\nFinal format needed: [FINAL_FORMAT].\n\nExact AI-use, AI literacy, academic integrity, or tool access language: [AI_POLICY_LANGUAGE].\n\nImplementation details to make explicit: [IMPLEMENTATION_DETAILS].\n\nPolicy, accreditation, department, or program alignment: [POLICY_ALIGNMENT].\n\nEvaluation plan after implementation: [EVALUATION_PLAN].\n\nFinal adjustments to simplify, clarify, or remove: [FINAL_ADJUSTMENTS].\n\nTeaching practices, curriculum structures, or student support routines that have typically worked well for me: [PAST_TEACHING_SUCCESSES].\n\nBefore producing the final version, privately remove redundant language, check feasibility, clarify AI-related expectations, ensure the curriculum remains aligned, inclusive, and implementable, and build on the past teaching successes where they support the stated outcomes and constraints.\n\nThen produce only the final curriculum package in clear markdown format.\n\nPlease include:\n- final curriculum title and brief overview\n- final outcomes or capability statements\n- final sequence, module map, weekly outline, or requested format\n- aligned learning activities, assessment evidence, and feedback moments\n- exact AI-use, AI literacy, academic integrity, or tool access language where relevant\n- student support and accessibility notes\n- instructor implementation notes and rollout checklist\n- policy, accreditation, or program-alignment notes\n- plan for evaluating the revision after delivery\n- a brief final rationale explaining how this version improves learning progression, coherence, and feasibility',
         slots: [
           {
             id: 'FINAL_FORMAT',
@@ -426,6 +435,11 @@ export const curriculumRevisionLab: LabConfig = {
             id: 'FINAL_ADJUSTMENTS',
             label: 'Final Adjustments',
             defaultText: 'final adjustments',
+          },
+          {
+            id: 'PAST_TEACHING_SUCCESSES',
+            label: 'Past Teaching Successes',
+            defaultText: 'teaching practices that have worked well before',
           },
         ],
       },
