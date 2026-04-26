@@ -5,9 +5,9 @@ Generative Universal Assistant for Resourceful Development
 
 **Product Requirements Document**
 
-Version 1.0  •  Functional Prototype
+Version 1.1  •  Current Functional Prototype
 
-March 2026
+April 2026
 
 # **Table of Contents**
 
@@ -50,7 +50,7 @@ GUARD is a web-based learning environment that teaches educators to use AI tools
 
 * **Socratic over instructional:** The scaffolding asks questions rather than giving answers. It provokes thinking rather than dictating process.
 
-* **Iterative over one-shot:** Each lab supports 2–3 structured refinement cycles, teaching that effective AI use is a conversation, not a single query.
+* **Iterative over one-shot:** Each lab supports three structured refinement cycles, teaching that effective AI use is a conversation, not a single query.
 
 * **Authentic over simulated:** Users interact with a real LLM, not a simulation. Skills transfer directly to their own AI usage.
 
@@ -82,7 +82,7 @@ Lecturers, teachers, and instructional designers across higher education and K�
 
 ## **2.3 Usage Context**
 
-Primary: Self-paced, asynchronous, individual use. Educators access GUARD on their own schedule, spending 20–45 minutes per lab session. The platform must work well for interrupted sessions (a teacher might start during a break and finish at home).
+Primary: Self-paced, asynchronous, individual use. Educators access GUARD on their own schedule, spending roughly 20–50 minutes per lab session depending on the lab. The platform supports interrupted work through browser-local active session state and browser-local session history.
 
 Secondary: The platform should also function in facilitated workshop settings where a trainer walks a group through a lab, but this is not the primary design target for V1.
 
@@ -103,7 +103,7 @@ The left panel drives the learning. The right panel is the practice space. Toget
 
 ## **3.2 The Iteration Arc**
 
-Each lab supports 2–3 structured iterations, each with a distinct pedagogical focus. The scaffolding evolves across iterations, becoming progressively more demanding:
+Each lab supports three structured iterations, each with a distinct pedagogical focus. The scaffolding evolves across iterations, becoming progressively more demanding:
 
 | Iteration 1 — “Get Something on the Page” Focus: Intent and clarity. The scaffolding helps the user articulate their pedagogical goal, context, and constraints. Questions are foundational (What are you trying to achieve? Who are your students?). The prompt template assembles from these answers. The evaluation checklist is basic: Does the output match the intent? |
 | :---- |
@@ -111,7 +111,7 @@ Each lab supports 2–3 structured iterations, each with a distinct pedagogical 
 | Iteration 2 — “Look Deeper” Focus: Critical evaluation and failure modes. The scaffolding shifts to probing the AI’s output for problems (What assumptions did the AI make? Where might this be inaccurate? Is this appropriately specific for your students?). AI failure modes are explicitly highlighted. The side-by-side comparison shows how the refined prompt produced different results. |
 | :---- |
 
-| Iteration 3 (Optional) — “Make It Yours” Focus: Adaptation and ownership. The scaffolding guides the transition from AI output to usable classroom material (What would you change before using this? What’s missing that only you would know? How would you adapt this for your specific students?). This iteration reinforces that AI is a starting point, not a finished product. |
+| Iteration 3 — “Make It Yours” Focus: Adaptation and ownership. The scaffolding guides the transition from AI output to usable classroom material (What would you change before using this? What’s missing that only you would know? How would you adapt this for your specific students?). Some labs label this iteration as optional pedagogically, but the current prototype guides users through all three iterations before showing the lab-complete state. |
 | :---- |
 
 ## **3.3 Phase Flow Within Each Iteration**
@@ -126,7 +126,7 @@ Each iteration follows a four-phase sequence. The left panel transitions between
 
 4. Evaluate — The left panel displays evaluation tools: targeted reflection questions, a quality checklist, failure-mode highlights, and (from iteration 2 onward) a side-by-side comparison with the previous iteration’s output.
 
-After evaluation, the user can either proceed to the next iteration (which loads new scaffolding questions) or mark the lab as complete.
+After evaluation, the user proceeds to the next iteration when one remains. At the end of the final iteration, the user marks the lab as complete and can return to the lab selection screen.
 
 ## **3.4 Prompt Template Mechanics**
 
@@ -144,7 +144,7 @@ Implementation details:
 
 * Filled slots are visually distinct from empty ones (e.g., highlighted background vs. placeholder text)
 
-* Users can click into any slot to edit directly, or modify the entire template as free text
+* Users can inspect filled slots in structured view and modify the entire generated prompt as free text in raw prompt view before sending
 
 * A toggle lets users switch between “structured view” (slots visible) and “raw prompt view” (plain text)
 
@@ -152,27 +152,29 @@ Implementation details:
 
 ## **4.1 Application Structure**
 
-The application has three levels of navigation:
+The application has four levels of navigation:
 
-* **Landing / Home:** Overview of GUARD, lab selection cards, optional login.
+* **Landing / Home:** Overview of GUARD and lab selection cards.
 
 * **Lab View:** The split-panel workspace (scaffolding \+ chat). This is where users spend nearly all their time.
 
-* **Settings (minimal):** API key management for BYOK users. Account settings for logged-in users.
+* **Settings:** OpenRouter API key management and model selection for BYOK users.
+
+* **History:** Browser-local session history for resuming unfinished sessions or reviewing completed labs.
 
 ## **4.2 Lab Selection (Home Screen)**
 
-The home screen presents three lab cards in a freely explorable layout. There is no required sequence. Each card displays:
+The home screen presents five lab cards in a freely explorable layout. There is no required sequence. Each card displays:
 
 * Lab title and icon
 
 * One-sentence description of what the user will accomplish
 
-* Estimated time (20–45 min)
+* Estimated time (20–50 min)
 
 * A brief learning outcome statement (“You’ll learn to...”)
 
-* A “Start Lab” call to action
+* The whole card acts as the “Start Lab” call to action
 
 ## **4.3 Lab Inventory (V1)**
 
@@ -181,10 +183,12 @@ The home screen presents three lab cards in a freely explorable layout. There is
 | Plan a Class Activity | Design a learning activity or lesson segment for a specific topic, audience, and learning objective using AI as a collaborative tool. | Prompt formulation, output evaluation, recognizing generic vs. context-specific outputs |
 | Create a Learning Assessment | Develop quiz questions, exam prompts, or formative assessment items with AI assistance while maintaining academic rigor. | Evaluating assessment alignment, detecting AI tendency toward surface-level questions, iterative refinement |
 | Design a Rubric | Build a detailed grading rubric for an assignment, with criteria, performance levels, and descriptors generated through AI collaboration. | Specificity in prompting, recognizing vague AI language, adapting outputs for practical use |
+| Revise an Existing Curriculum | Upload an existing curriculum, syllabus, or module sequence and revise it for stronger alignment, coherence, AI literacy, and realistic implementation. | Curriculum alignment, sequencing, AI literacy integration, implementation planning |
+| Revise an Assignment for AI Use | Upload an existing assignment and revise it so student AI use is handled fairly while preserving meaningful learning assessment. | Assignment redesign for AI use, fairness, process evidence, meaningful assessment |
 
 # **5\. Learning Lab Specifications**
 
-This section details the full scaffolding content for each lab, including Socratic questions, prompt templates, evaluation tools, and failure-mode highlights for every iteration. All scaffolding questions use a Socratic voice: they provoke thinking rather than dictate answers.
+This section summarizes the scaffolded content for each lab, including Socratic questions, prompt templates, evaluation tools, and failure-mode highlights. The implementation source of truth is the structured TypeScript lab configuration in `content/*.ts`; those files may include additional prompts or slightly expanded wording while preserving the learning intent described here. All scaffolding questions use a Socratic voice: they provoke thinking rather than dictate answers.
 
 ## **5.1 Lab 1: Plan a Class Activity**
 
@@ -332,6 +336,74 @@ After the AI responds, the left panel displays:
 | Q2 | Does this rubric reward what matters most to you, or has the AI subtly shifted the emphasis? |
 | Q3 | What instructions or context would you add when sharing this rubric with students? |
 
+## **5.4 Lab 4: Revise an Existing Curriculum**
+
+This lab is document-driven. Before continuing, the user uploads an existing curriculum, syllabus, or module sequence. The uploaded document is parsed and passed to the chat route as additional course context.
+
+### **5.4.1 Iteration 1 — Curriculum Diagnosis**
+
+**Phase: Reflect**
+
+The scaffolding asks the educator to clarify curriculum context, learning goals, current problems, the intended role of AI tools or AI literacy, constraints, and the top revision priority.
+
+**Phase: Evaluate**
+
+The evaluation panel asks whether the revision improves the learning journey rather than merely rearranging topics, and whether AI-related elements are tied to learning goals and student support. The checklist covers preserved curriculum purpose, outcome/activity/assessment alignment, progression, pedagogical reason for AI use, realistic workload, and inclusion/access support. Failure-mode alerts highlight “Topic Shuffle” and “AI Add-On.”
+
+### **5.4.2 Iteration 2 — Coherence & Evidence**
+
+**Phase: Reflect**
+
+The scaffolding probes remaining alignment gaps, sequence issues, unclear learning evidence, workload or pacing concerns, student support gaps, and elements worth keeping.
+
+**Phase: Evaluate**
+
+The evaluation panel asks whether major outcomes can be traced through instruction, practice, feedback, and assessment evidence. The checklist covers outcome traceability, bridges between concepts and performance, feedback placement, workload distribution, support and accessibility adjustments, and feasible AI-related expectations. Failure-mode alerts highlight “Alignment Theater” and “Unfunded Support.”
+
+### **5.4.3 Iteration 3 — Implementation Package**
+
+**Phase: Reflect**
+
+The scaffolding asks for the final format, student- or reviewer-facing AI language, implementation details, policy/accreditation alignment, an evaluation plan, final simplifications, and past teaching practices to preserve.
+
+**Phase: Evaluate**
+
+The evaluation panel asks whether another instructor could implement the curriculum from the final package and what evidence would show improved learning. The checklist covers final format, student expectations, concrete AI language, implementation details, policy alignment, and evaluation of learning. Failure-mode alerts highlight “Document-Ready, Not Teaching-Ready” and “Policy Language Drift.”
+
+## **5.5 Lab 5: Revise an Assignment for AI Use**
+
+This lab is document-driven. Before continuing, the user uploads an existing assignment. The uploaded document is parsed and passed to the chat route as additional course context.
+
+### **5.5.1 Iteration 1 — Assignment Diagnosis**
+
+**Phase: Reflect**
+
+The scaffolding asks the educator to clarify course context, valid learning evidence, likely student AI use, the desired AI-use stance, fairness constraints, and practical constraints.
+
+**Phase: Evaluate**
+
+The evaluation panel asks whether the revision still assesses meaningful learning rather than becoming an AI-detection exercise, and whether students with different access or support needs have a fair path to succeed. The checklist covers preserved learning purpose, explicit AI-use expectations, evidence of thinking/process, fairness across AI access, and realistic grading. Failure-mode alerts highlight “AI-Proofing by Surveillance” and “Access Blind Spot.”
+
+### **5.5.2 Iteration 2 — Fairness & Evidence**
+
+**Phase: Reflect**
+
+The scaffolding probes outsourcing risk, productive AI-use opportunities, needed process evidence, remaining fairness gaps, elements worth keeping, and grading or feedback workload.
+
+**Phase: Evaluate**
+
+The evaluation panel asks whether each AI-related requirement can be explained in learning terms and whether the revision reduces unfair advantages without unnecessary complexity. The checklist covers whether core thinking can be outsourced, whether AI is leveraged where useful, whether disclosure is specific, whether alternatives exist for different AI access levels, whether process artifacts are proportionate, and whether instructor workload remains realistic. Failure-mode alerts highlight “Complexity Creep” and “Disclosure Without Consequences.”
+
+### **5.5.3 Iteration 3 (Optional) — Classroom-Ready Version**
+
+**Phase: Reflect**
+
+The scaffolding asks for final student-facing voice, exact disclosure language, checkpoints or feedback moments, rubric/policy alignment, student support, and past teaching practices to preserve.
+
+**Phase: Evaluate**
+
+The evaluation panel asks whether students would know exactly what AI use is acceptable and what must be disclosed, and what needs adjustment before launch. The checklist covers student-ready directions, concrete acknowledgement language, submission checklist alignment, planned support, and realistic instructor notes. The failure-mode alert highlights “Polished but Misaligned.”
+
 # **6\. UI/UX Design Specifications**
 
 ## **6.1 Visual Design Language**
@@ -362,9 +434,9 @@ GUARD should feel calm, professional, and educational—not like a consumer AI p
 
 * **Iteration indicator:** Shows “Iteration 1 of 3” with the focus label (e.g., “Intent & Context”). Helps users understand where they are in the arc.
 
-* **Scaffolding questions:** Each question appears as a card with a text input field. A subtle Socratic “thinking prompt” icon (e.g., a thought bubble) signals the reflective intent. Questions appear sequentially—not all at once—to avoid overwhelm.
+* **Scaffolding questions:** Each question appears as a card with a text input field. Questions are displayed together within the Reflect phase so users can review the full scaffold and move among answers freely.
 
-* **Prompt template panel:** Appears in the Compose phase. Shows the full template with filled slots highlighted. Includes a toggle for structured vs. raw view. A prominent “Send to AI” button at the bottom.
+* **Prompt template panel:** Appears in the Reflect and Compose phases. Shows the full template with filled slots highlighted. Includes a toggle for structured vs. raw view in Compose. The raw view is editable and a prominent “Send to AI” button appears at the bottom of the panel.
 
 * **Evaluation panel:** Appears after AI responds. Contains tabs or accordion sections for: Reflection Questions, Quality Checklist, Failure Mode Alerts, and (from iteration 2\) Side-by-Side Comparison.
 
@@ -372,19 +444,19 @@ GUARD should feel calm, professional, and educational—not like a consumer AI p
 
 * **Chat interface:** Standard chat layout with user messages on the right, AI responses on the left. Responses stream in real time.
 
-* **Message actions:** Each AI response has a copy-to-clipboard button. Each user message shows the full prompt that was sent (expanding on click if long).
+* **Message actions:** Each completed AI response has a copy-to-clipboard button. Each user message shows the full prompt that was sent.
 
-* **Model indicator:** Small badge showing which model is active (gpt-4.1-mini or gpt-4.1 for BYOK users).
+* **Model indicator:** Small badge showing the active OpenRouter model ID.
 
 ## **6.5 Responsive Behavior**
 
-The split-panel layout is designed for desktop/laptop screens (1024px+). On tablet, the panels stack vertically with the scaffolding above and chat below. On mobile, a tab-based navigation switches between scaffolding and chat views. Mobile is a secondary concern for V1.
+The split-panel layout is designed for desktop/laptop screens (1024px+). On tablet and smaller screens, the panels stack vertically with the scaffolding above and chat below. Mobile optimization beyond this stacked layout is a secondary concern for V1.
 
 ## **6.6 Key Interaction Patterns**
 
 * **Mad-libs animation:** When a user finishes answering a scaffolding question, the corresponding slot in the prompt template fills in with a subtle highlight animation. This creates a satisfying visual connection between reflection and prompt construction.
 
-* **Phase transitions:** When moving between phases, the left panel content transitions with a smooth scroll or slide, not an abrupt replacement. The user should never feel disoriented.
+* **Phase transitions:** When moving between phases, the left panel content changes with a lightweight animated replacement that preserves the phase and iteration indicators for orientation.
 
 * **Evaluation emphasis:** When a failure-mode alert is relevant, it appears with a gentle attention-drawing treatment (accent border, subtle icon)—not an alarming warning. The tone is educational, not punitive.
 
@@ -399,18 +471,21 @@ The split-panel layout is designed for desktop/laptop screens (1024px+). On tabl
 | Framework | Next.js (App Router) with TypeScript | SSR for landing page SEO, client-side rendering for lab interactivity. Consistent with existing project infrastructure. |
 | Styling | Tailwind CSS | Utility-first approach for rapid UI development. Consistent with existing GUARD codebase. |
 | State Management | Zustand | Lightweight, minimal boilerplate. Well-suited for managing lab state, iteration progress, and chat history. |
-| LLM Integration | OpenAI API (server-side route handlers) | gpt-4.1-mini as default model, with gpt-4.1 available for BYOK users. Streaming responses via server-sent events. |
-| Authentication (optional) | NextAuth.js or Clerk | Lightweight auth for optional persistence. Must support “guest mode” with full functionality. |
+| LLM Integration | OpenAI SDK pointed at OpenRouter (server-side route handler) | Default access uses a configured OpenRouter key and MiniMax M2.5. BYOK users can provide their own OpenRouter key and select curated or custom OpenRouter model endpoints. Streaming responses via server-sent events. |
+| File Parsing | Next.js route handler with document parsing libraries | Supports uploaded context documents for document-driven labs. |
+| Authentication | None in V1 | Guest mode is the only mode. Full lab functionality works without login. |
 | Hosting | Netlify | Consistent with existing deployment pipeline. |
-| Database (optional) | Supabase or PlanetScale | Only needed if login/persistence is implemented. Stores user sessions, saved lab outputs, and API keys (encrypted). |
+| Persistence | Browser storage | Active lab and chat state are stored in sessionStorage. Session history is stored locally in the browser. |
 
 ## **7.2 Key Architecture Decisions**
 
-* **Server-side API calls:** All LLM API calls go through Next.js route handlers. This keeps API keys secure and enables rate limiting. BYOK keys are stored client-side (localStorage or session) and passed to the route handler per request.
+* **Server-side API calls:** All LLM API calls go through the Next.js `/api/chat` route handler. A deployment-level OpenRouter key can provide default access. BYOK keys are stored client-side in sessionStorage and passed to the route handler per request.
 
-* **Session state:** For guest users, all state (lab progress, chat history, iteration data) lives in Zustand stores backed by sessionStorage. Closing the browser loses the session. For logged-in users, state is persisted to the database.
+* **Session state:** Active lab progress, chat history, iteration data, selected model, and BYOK key live in Zustand stores backed by sessionStorage. A browser-local history store keeps up to 20 recent sessions in localStorage for resume/review. There is no server-side account persistence in V1.
 
 * **Scaffolding data model:** Lab content (questions, templates, checklists, failure modes) is stored as structured JSON/TypeScript config files, not in a database. This makes content easy to author and version-control.
+
+* **Context documents:** Document-driven labs use an upload/parse route to extract text from supported files and pass the parsed text as additional system context during chat requests.
 
 * **Streaming responses:** LLM responses stream token-by-token to the chat panel using server-sent events (SSE). This provides immediate feedback and matches user expectations from consumer AI tools.
 
@@ -428,15 +503,11 @@ Core entities:
 
 ## **7.4 API Routes**
 
-* POST /api/chat — Sends prompt to OpenAI, streams response. Accepts model preference and optional BYOK key.
+* POST /api/chat — Sends prompt messages to OpenRouter through the OpenAI SDK and streams the response. Accepts model preference and optional BYOK key.
 
-* GET /api/labs — Returns lab metadata for the home screen.
+* POST /api/parse-file — Parses uploaded context documents for document-driven labs.
 
-* GET /api/labs/\[id\] — Returns full lab content including all scaffolding.
-
-* POST /api/session (authenticated) — Saves session state for logged-in users.
-
-* GET /api/session/\[id\] (authenticated) — Retrieves saved session.
+Static lab metadata and scaffolding content are bundled in TypeScript configuration files and imported by the app; no lab-content API routes are required in V1.
 
 # **8\. V1 Scope & Prioritization**
 
@@ -448,28 +519,29 @@ V1 is a functional prototype where the core interaction flow works end-to-end. P
 
 | Feature | Scope | Priority |
 | :---- | :---- | :---- |
-| 3 Learning Labs | Full scaffolding content for all iterations across Activity Planning, Assessment Creation, and Rubric Design | P0 |
+| 5 Learning Labs | Full scaffolding content for all iterations across Activity Planning, Assessment Creation, Rubric Design, Curriculum Revision, and Assignment AI Resilience | P0 |
 | Split-panel layout | Left scaffolding \+ right chat, desktop-optimized | P0 |
 | Mad-libs prompt assembly | Real-time slot filling from scaffolding answers with visual feedback | P0 |
-| Editable prompt templates | Users can modify generated prompts before sending | P0 |
-| LLM integration | gpt-4.1-mini default with streaming responses | P0 |
-| Iteration arc (2–3 cycles) | Phase transitions, evolving scaffolding, iteration indicators | P0 |
+| Editable prompt templates | Users can modify the generated prompt in raw prompt view before sending | P0 |
+| LLM integration | OpenRouter-backed streaming chat using the OpenAI SDK route handler | P0 |
+| Iteration arc (3 cycles) | Phase transitions, evolving scaffolding, iteration indicators | P0 |
 | Evaluation tools | Reflection questions, quality checklists, failure-mode alerts | P0 |
 | Side-by-side comparison | Diff view for iteration 2+ outputs | P1 |
-| BYOK API key support | User enters OpenAI key for gpt-4.1 access | P1 |
+| BYOK API key support | User enters an OpenRouter key and chooses a curated or custom OpenRouter model | P1 |
 | Copy to clipboard | On each AI response message | P1 |
 | Guest mode | Full functionality without login | P0 |
+| Browser-local history | Auto-saves sessions locally for resume/review without account persistence | P1 |
+| Document context upload | Required upload and parsing flow for document-driven curriculum and assignment labs | P1 |
+| Chat export | Export full chat as DOCX or PDF from the chat panel | P2 |
 | Responsive tablet layout | Stacked panel layout for smaller screens | P2 |
 
 ## **8.3 Out of Scope (V1)**
 
-* User accounts and persistent session storage
+* User accounts and server-side persistent session storage
 
 * Mobile-optimized layout
 
 * Adaptive scaffolding (questions that change based on AI output)
-
-* Export functionality beyond copy-to-clipboard
 
 * Analytics or usage tracking
 
@@ -477,19 +549,19 @@ V1 is a functional prototype where the core interaction flow works end-to-end. P
 
 * Facilitator/admin dashboard for workshop settings
 
-* Additional labs beyond the initial three
+* Additional labs beyond the five implemented labs
 
 ## **8.4 Implementation Phases**
 
 * **Phase 1 — Foundation (Week 1–2):** Project setup, layout scaffolding, lab data model, one complete lab (Activity Planning) with all iterations.
 
-* **Phase 2 — LLM Integration (Week 2–3):** OpenAI API route, streaming chat, prompt template mechanics, mad-libs assembly.
+* **Phase 2 — LLM Integration (Week 2–3):** OpenRouter-backed chat route, streaming chat, prompt template mechanics, mad-libs assembly.
 
 * **Phase 3 — Evaluation Layer (Week 3–4):** Evaluation panel, checklists, failure mode alerts, side-by-side comparison.
 
-* **Phase 4 — Remaining Labs (Week 4–5):** Assessment and Rubric labs using the same component architecture.
+* **Phase 4 — Remaining Labs (Week 4–5):** Assessment, Rubric, Curriculum Revision, and Assignment AI Resilience labs using the same component architecture.
 
-* **Phase 5 — Polish & BYOK (Week 5–6):** BYOK flow, UI refinement, tablet responsiveness, testing with educators.
+* **Phase 5 — Polish & BYOK (Week 5–6):** OpenRouter BYOK flow, browser-local history, document upload context, chat export, UI refinement, tablet responsiveness, testing with educators.
 
 # **9\. Future Considerations**
 
