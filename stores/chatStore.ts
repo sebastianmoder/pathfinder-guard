@@ -113,7 +113,7 @@ export const useChatStore = create<ChatStore>()(
 }),
     {
       name: 'guard-chat',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => window.sessionStorage),
       partialize: (state) => ({
         messages: state.messages,
         model: state.model,

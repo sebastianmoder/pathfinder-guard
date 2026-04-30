@@ -341,7 +341,7 @@ export const useLabSessionStore = create<LabSessionStore>()(
 }),
     {
       name: 'guard-lab-session',
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => window.sessionStorage),
     }
   )
 );

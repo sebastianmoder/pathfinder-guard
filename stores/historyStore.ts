@@ -87,7 +87,7 @@ export const useHistoryStore = create<HistoryStore>()(
     }),
     {
       name: 'guard-history',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => window.localStorage),
     }
   )
 );
