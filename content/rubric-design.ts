@@ -1,4 +1,5 @@
 import type { LabConfig } from '@/lib/types';
+import { outputLanguageQuestion, outputLanguageSlot } from './output-language';
 
 export const rubricDesignLab: LabConfig = {
   meta: {
@@ -77,10 +78,11 @@ export const rubricDesignLab: LabConfig = {
           templateSlot: 'MIDDLE_DESCRIPTION',
           inputType: 'textarea',
         },
+        outputLanguageQuestion,
       ],
       promptTemplate: {
         templateText:
-          'You are an experienced educator and rubric designer. Create a rubric that is specific, observable, practical to grade with, and understandable to students.\n\nAssignment or task: [ASSIGNMENT_DESCRIPTION].\n\nRubric users and purpose: [STUDENT_CONTEXT].\n\nThe rubric should evaluate these key qualities: [CRITERIA_LIST].\n\nRubric type, weights, or points: [RUBRIC_TYPE].\n\nPerformance levels and what they mean: [LEVEL_NAMES].\n\nA typical "good but not great" submission looks like: [MIDDLE_DESCRIPTION].\n\nUse these inputs as design requirements. Before drafting, privately translate each key quality into observable evidence, define the middle level first using the typical submission, and then distinguish higher and lower levels by qualitative differences rather than vague adjective changes.\n\nThen produce only the rubric in clear markdown format.\n\nPlease include:\n- a concise rubric title\n- a short statement of what the rubric is designed to evaluate\n- a clean rubric table with criteria, performance levels, descriptors, and points or weights if requested\n- descriptors that name observable features of the work rather than internal states such as "understands" or "demonstrates excellence"\n- brief student-facing notes on how to use the rubric\n- brief grader-facing notes for applying the rubric consistently',
+          'You are an experienced educator and rubric designer. Create a rubric that is specific, observable, practical to grade with, and understandable to students.\n\nAssignment or task: [ASSIGNMENT_DESCRIPTION].\n\nRubric users and purpose: [STUDENT_CONTEXT].\n\nThe rubric should evaluate these key qualities: [CRITERIA_LIST].\n\nRubric type, weights, or points: [RUBRIC_TYPE].\n\nPerformance levels and what they mean: [LEVEL_NAMES].\n\nA typical "good but not great" submission looks like: [MIDDLE_DESCRIPTION].\n\nUse these inputs as design requirements. Before drafting, privately translate each key quality into observable evidence, define the middle level first using the typical submission, and then distinguish higher and lower levels by qualitative differences rather than vague adjective changes.\n\nThen produce only the rubric in clear markdown format.\n\nPlease include:\n- a concise rubric title\n- a short statement of what the rubric is designed to evaluate\n- a clean rubric table with criteria, performance levels, descriptors, and points or weights if requested\n- descriptors that name observable features of the work rather than internal states such as "understands" or "demonstrates excellence"\n- brief student-facing notes on how to use the rubric\n- brief grader-facing notes for applying the rubric consistently\n\nAlways respond in [LANGUAGE] language unless explicitly instructed otherwise.',
         slots: [
           {
             id: 'RUBRIC_TYPE',
@@ -112,6 +114,7 @@ export const rubricDesignLab: LabConfig = {
             label: 'Middle Performance',
             defaultText: 'what "good but not great" looks like',
           },
+          outputLanguageSlot,
         ],
       },
       evaluationTools: {

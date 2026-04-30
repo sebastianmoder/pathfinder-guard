@@ -20,7 +20,14 @@ export interface ScaffoldingQuestion {
   question: string;
   placeholder?: string;
   templateSlot: string;
-  inputType: 'text' | 'textarea';
+  inputType: 'text' | 'textarea' | 'select';
+  options?: ScaffoldingQuestionOption[];
+  defaultValue?: string;
+}
+
+export interface ScaffoldingQuestionOption {
+  value: string;
+  label: string;
 }
 
 export interface TemplateSlot {

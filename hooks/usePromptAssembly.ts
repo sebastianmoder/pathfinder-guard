@@ -20,7 +20,7 @@ function buildSlotAnswers(
 ): Record<string, string> {
   const slotAnswers: Record<string, string> = {};
   for (const q of questions) {
-    const answer = answers[q.id];
+    const answer = answers[q.id] ?? q.defaultValue;
     if (answer && answer.trim()) {
       slotAnswers[q.templateSlot] = answer.trim();
     }

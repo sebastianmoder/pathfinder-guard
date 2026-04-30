@@ -1,4 +1,5 @@
 import type { LabConfig } from '@/lib/types';
+import { outputLanguageQuestion, outputLanguageSlot } from './output-language';
 
 export const assessmentCreationLab: LabConfig = {
   meta: {
@@ -86,10 +87,11 @@ export const assessmentCreationLab: LabConfig = {
           templateSlot: 'ASSESSMENT_PURPOSE',
           inputType: 'textarea',
         },
+        outputLanguageQuestion,
       ],
       promptTemplate: {
         templateText:
-          'You are an experienced educator and assessment designer. Create an assessment that is aligned, rigorous, and practical for the stated classroom context.\n\nCourse and students: [COURSE_CONTEXT].\n\nAssessment purpose: [ASSESSMENT_PURPOSE].\n\nTopic or unit: [TOPIC].\n\nThe assessment should measure students\' ability to [SPECIFIC_SKILL].\n\nTarget cognitive demand: [COGNITIVE_LEVEL].\n\nRequired format, length, and conditions: [ASSESSMENT_FORMAT].\n\nCommon misconception or error to diagnose: [MISCONCEPTION].\n\nUse these inputs as design requirements. Before drafting, privately map the target skill to the requested cognitive demand, decide what evidence each question should elicit, and ensure at least some items distinguish genuine understanding from memorized or easily searchable knowledge.\n\nThen produce only the assessment in clear markdown format.\n\nPlease include:\n- a concise assessment title\n- a short overview of what the assessment measures\n- the full set of questions in the requested format\n- answer key or model answers\n- brief scoring guidance or point values where useful\n- a note for each question explaining what it tests and which misconception, if any, it can reveal\n- a brief alignment note explaining how the assessment fits the purpose, students, and cognitive demand',
+          'You are an experienced educator and assessment designer. Create an assessment that is aligned, rigorous, and practical for the stated classroom context.\n\nCourse and students: [COURSE_CONTEXT].\n\nAssessment purpose: [ASSESSMENT_PURPOSE].\n\nTopic or unit: [TOPIC].\n\nThe assessment should measure students\' ability to [SPECIFIC_SKILL].\n\nTarget cognitive demand: [COGNITIVE_LEVEL].\n\nRequired format, length, and conditions: [ASSESSMENT_FORMAT].\n\nCommon misconception or error to diagnose: [MISCONCEPTION].\n\nUse these inputs as design requirements. Before drafting, privately map the target skill to the requested cognitive demand, decide what evidence each question should elicit, and ensure at least some items distinguish genuine understanding from memorized or easily searchable knowledge.\n\nThen produce only the assessment in clear markdown format.\n\nPlease include:\n- a concise assessment title\n- a short overview of what the assessment measures\n- the full set of questions in the requested format\n- answer key or model answers\n- brief scoring guidance or point values where useful\n- a note for each question explaining what it tests and which misconception, if any, it can reveal\n- a brief alignment note explaining how the assessment fits the purpose, students, and cognitive demand\n\nAlways respond in [LANGUAGE] language unless explicitly instructed otherwise.',
         slots: [
           {
             id: 'COURSE_CONTEXT',
@@ -122,6 +124,7 @@ export const assessmentCreationLab: LabConfig = {
             label: 'Format and Conditions',
             defaultText: 'assessment format, length, and conditions',
           },
+          outputLanguageSlot,
         ],
       },
       evaluationTools: {

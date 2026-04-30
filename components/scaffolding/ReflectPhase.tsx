@@ -27,13 +27,12 @@ export function ReflectPhase({
   return (
     <div className="space-y-8">
       <div className="space-y-5">
-        {questions.map((question, index) => (
+        {questions.map((question) => (
           <ScaffoldingQuestion
             key={question.id}
             question={question}
-            value={answers[question.id] || ''}
+            value={answers[question.id] ?? question.defaultValue ?? ''}
             onChange={(value) => onAnswerChange(question.id, value)}
-            index={index}
           />
         ))}
       </div>

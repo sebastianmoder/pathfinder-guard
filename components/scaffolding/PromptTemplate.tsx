@@ -34,7 +34,7 @@ export function PromptTemplate({
     const values: Record<string, string | null> = {};
     for (const slot of template.slots) {
       const question = questions.find((q) => q.templateSlot === slot.id);
-      const answer = question ? answers[question.id] : undefined;
+      const answer = question ? answers[question.id] ?? question.defaultValue : undefined;
       values[slot.id] = answer && answer.trim() ? answer.trim() : null;
     }
     return values;

@@ -1,4 +1,5 @@
 import type { LabConfig } from '@/lib/types';
+import { outputLanguageQuestion, outputLanguageSlot } from './output-language';
 
 export const activityPlanningLab: LabConfig = {
   meta: {
@@ -77,10 +78,11 @@ export const activityPlanningLab: LabConfig = {
           templateSlot: 'ENGAGEMENT_TYPE',
           inputType: 'textarea',
         },
+        outputLanguageQuestion,
       ],
       promptTemplate: {
         templateText:
-          'You are an experienced educational consultant specializing in pedagogical design and instructional methods. Your task is to create a well-structured, pedagogically sound classroom activity tailored to a specific educational context.\n\nI am a [ROLE_SUBJECT] educator. I need a class activity about [TOPIC] that helps students achieve this learning objective: [LEARNING_OBJECTIVE].\n\nAbout my students: [STUDENT_CONTEXT].\n\nThe activity must fit within these constraints: [TIME_CONSTRAINT]. I want student engagement to look like this: [ENGAGEMENT_TYPE].\n\nUse the educator\'s inputs as design requirements, not generic background. Before drafting, privately check what students need to know, understand, or be able to do; identify the Bloom\'s taxonomy level implied by the objective; note whether the learning is mainly factual, conceptual, procedural, or metacognitive; and choose an activity structure that fits the student context, constraints, and desired engagement.\n\nThen produce only the classroom activity plan in clear markdown format. The plan should be concrete enough that I could implement it without asking follow-up questions.\n\nPlease include:\n- a concise activity title\n- the learning objective and why the activity directly supports it\n- a brief activity overview\n- materials and setup needed\n- step-by-step teacher and student instructions with timing for each stage\n- topic-specific prompts, examples, or tasks students will work with\n- scaffolding for likely student difficulties\n- a check for understanding or formative assessment\n- a brief note on how the activity fits the stated students, constraints, and engagement goals',
+          'You are an experienced educational consultant specializing in pedagogical design and instructional methods. Your task is to create a well-structured, pedagogically sound classroom activity tailored to a specific educational context.\n\nI am a [ROLE_SUBJECT] educator. I need a class activity about [TOPIC] that helps students achieve this learning objective: [LEARNING_OBJECTIVE].\n\nAbout my students: [STUDENT_CONTEXT].\n\nThe activity must fit within these constraints: [TIME_CONSTRAINT]. I want student engagement to look like this: [ENGAGEMENT_TYPE].\n\nUse the educator\'s inputs as design requirements, not generic background. Before drafting, privately check what students need to know, understand, or be able to do; identify the Bloom\'s taxonomy level implied by the objective; note whether the learning is mainly factual, conceptual, procedural, or metacognitive; and choose an activity structure that fits the student context, constraints, and desired engagement.\n\nThen produce only the classroom activity plan in clear markdown format. The plan should be concrete enough that I could implement it without asking follow-up questions.\n\nPlease include:\n- a concise activity title\n- the learning objective and why the activity directly supports it\n- a brief activity overview\n- materials and setup needed\n- step-by-step teacher and student instructions with timing for each stage\n- topic-specific prompts, examples, or tasks students will work with\n- scaffolding for likely student difficulties\n- a check for understanding or formative assessment\n- a brief note on how the activity fits the stated students, constraints, and engagement goals\n\nAlways respond in [LANGUAGE] language unless explicitly instructed otherwise.',
         slots: [
           {
             id: 'ROLE_SUBJECT',
@@ -108,6 +110,7 @@ export const activityPlanningLab: LabConfig = {
             label: 'Engagement Type',
             defaultText: 'type of engagement',
           },
+          outputLanguageSlot,
         ],
       },
       evaluationTools: {

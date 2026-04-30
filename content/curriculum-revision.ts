@@ -1,4 +1,5 @@
 import type { LabConfig } from '@/lib/types';
+import { outputLanguageQuestion, outputLanguageSlot } from './output-language';
 
 export const curriculumRevisionLab: LabConfig = {
   meta: {
@@ -78,10 +79,11 @@ export const curriculumRevisionLab: LabConfig = {
           templateSlot: 'REVISION_PRIORITY',
           inputType: 'textarea',
         },
+        outputLanguageQuestion,
       ],
       promptTemplate: {
         templateText:
-          'You are an experienced curriculum designer helping revise an existing curriculum.\n\nUse the uploaded curriculum document in the additional context as the source curriculum. If no curriculum document is available in context, do not invent a curriculum. Ask the educator to upload or paste the curriculum and stop.\n\nCurriculum context: [CURRICULUM_CONTEXT].\n\nLearning goals to protect or strengthen: [LEARNING_GOALS].\n\nCurrent curriculum problems: [CURRENT_PROBLEMS].\n\nDesired role of AI tools or AI literacy: [AI_LITERACY_ROLE].\n\nConstraints: [CONSTRAINTS].\n\nRevision priority: [REVISION_PRIORITY].\n\nBefore drafting, privately analyze the uploaded curriculum for alignment among outcomes, learning activities, assessments, sequencing, workload, student support, and the stated AI literacy role. Look for gaps, duplication, hidden prerequisite assumptions, overpacked sections, missing evidence of learning, inequitable access requirements, and places where AI use may either support or undermine the intended learning.\n\nThen produce only a revised curriculum draft in clear markdown format. Preserve the curriculum purpose where possible, but revise the structure so it is coherent, teachable, and aligned with the stated priorities.\n\nPlease include:\n- a concise diagnosis of the current curriculum strengths and problems\n- revised learning outcomes or capability statements where needed\n- a revised sequence, module map, or week-by-week outline\n- where key learning activities, practice opportunities, and assessments fit\n- how AI tools or AI literacy are included, limited, or deliberately excluded\n- student support and equity considerations\n- workload and implementation notes for the instructor\n- a brief rationale explaining how the revision improves alignment and coherence',
+          'You are an experienced curriculum designer helping revise an existing curriculum.\n\nUse the uploaded curriculum document in the additional context as the source curriculum. If no curriculum document is available in context, do not invent a curriculum. Ask the educator to upload or paste the curriculum and stop.\n\nCurriculum context: [CURRICULUM_CONTEXT].\n\nLearning goals to protect or strengthen: [LEARNING_GOALS].\n\nCurrent curriculum problems: [CURRENT_PROBLEMS].\n\nDesired role of AI tools or AI literacy: [AI_LITERACY_ROLE].\n\nConstraints: [CONSTRAINTS].\n\nRevision priority: [REVISION_PRIORITY].\n\nBefore drafting, privately analyze the uploaded curriculum for alignment among outcomes, learning activities, assessments, sequencing, workload, student support, and the stated AI literacy role. Look for gaps, duplication, hidden prerequisite assumptions, overpacked sections, missing evidence of learning, inequitable access requirements, and places where AI use may either support or undermine the intended learning.\n\nThen produce only a revised curriculum draft in clear markdown format. Preserve the curriculum purpose where possible, but revise the structure so it is coherent, teachable, and aligned with the stated priorities.\n\nPlease include:\n- a concise diagnosis of the current curriculum strengths and problems\n- revised learning outcomes or capability statements where needed\n- a revised sequence, module map, or week-by-week outline\n- where key learning activities, practice opportunities, and assessments fit\n- how AI tools or AI literacy are included, limited, or deliberately excluded\n- student support and equity considerations\n- workload and implementation notes for the instructor\n- a brief rationale explaining how the revision improves alignment and coherence\n\nAlways respond in [LANGUAGE] language unless explicitly instructed otherwise.',
         slots: [
           {
             id: 'CURRICULUM_CONTEXT',
@@ -113,6 +115,7 @@ export const curriculumRevisionLab: LabConfig = {
             label: 'Revision Priority',
             defaultText: 'top revision priority',
           },
+          outputLanguageSlot,
         ],
       },
       evaluationTools: {

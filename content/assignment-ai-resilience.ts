@@ -1,4 +1,5 @@
 import type { LabConfig } from '@/lib/types';
+import { outputLanguageQuestion, outputLanguageSlot } from './output-language';
 
 export const assignmentAiResilienceLab: LabConfig = {
   meta: {
@@ -78,10 +79,11 @@ export const assignmentAiResilienceLab: LabConfig = {
           templateSlot: 'PRACTICAL_CONSTRAINTS',
           inputType: 'textarea',
         },
+        outputLanguageQuestion,
       ],
       promptTemplate: {
         templateText:
-          'You are an experienced educator and assessment designer helping revise an existing assignment for a classroom where students may use AI tools.\n\nUse the uploaded assignment document in the additional context as the source assignment. If no assignment document is available in context, do not invent an assignment. Ask the educator to upload or paste the assignment and stop.\n\nCourse and students: [COURSE_CONTEXT].\n\nThe assignment should assess this learning evidence: [LEARNING_EVIDENCE].\n\nLikely student AI use: [LIKELY_AI_USE].\n\nDesired AI-use stance: [AI_STANCE].\n\nFairness constraints: [FAIRNESS_CONSTRAINTS].\n\nPractical constraints: [PRACTICAL_CONSTRAINTS].\n\nBefore drafting, privately analyze the uploaded assignment for parts that are easy to outsource to AI, parts where AI could support learning if structured, hidden assumptions about student access or prior knowledge, and places where the assignment may measure compliance or tool access instead of the intended learning.\n\nThen produce only a revised assignment draft in clear markdown format. Preserve the core learning purpose where possible, but revise the task so it can withstand or productively leverage student AI use.\n\nPlease include:\n- a concise diagnosis of the original assignment vulnerabilities\n- a revised student-facing assignment brief\n- a clear AI-use policy explaining what is permitted, required, discouraged, or prohibited\n- required evidence of student thinking, process, decision-making, or verification\n- fairness and accessibility considerations built into the assignment design\n- suggested submission components\n- a brief rationale explaining how the revision better assesses meaningful learning',
+          'You are an experienced educator and assessment designer helping revise an existing assignment for a classroom where students may use AI tools.\n\nUse the uploaded assignment document in the additional context as the source assignment. If no assignment document is available in context, do not invent an assignment. Ask the educator to upload or paste the assignment and stop.\n\nCourse and students: [COURSE_CONTEXT].\n\nThe assignment should assess this learning evidence: [LEARNING_EVIDENCE].\n\nLikely student AI use: [LIKELY_AI_USE].\n\nDesired AI-use stance: [AI_STANCE].\n\nFairness constraints: [FAIRNESS_CONSTRAINTS].\n\nPractical constraints: [PRACTICAL_CONSTRAINTS].\n\nBefore drafting, privately analyze the uploaded assignment for parts that are easy to outsource to AI, parts where AI could support learning if structured, hidden assumptions about student access or prior knowledge, and places where the assignment may measure compliance or tool access instead of the intended learning.\n\nThen produce only a revised assignment draft in clear markdown format. Preserve the core learning purpose where possible, but revise the task so it can withstand or productively leverage student AI use.\n\nPlease include:\n- a concise diagnosis of the original assignment vulnerabilities\n- a revised student-facing assignment brief\n- a clear AI-use policy explaining what is permitted, required, discouraged, or prohibited\n- required evidence of student thinking, process, decision-making, or verification\n- fairness and accessibility considerations built into the assignment design\n- suggested submission components\n- a brief rationale explaining how the revision better assesses meaningful learning\n\nAlways respond in [LANGUAGE] language unless explicitly instructed otherwise.',
         slots: [
           {
             id: 'COURSE_CONTEXT',
@@ -113,6 +115,7 @@ export const assignmentAiResilienceLab: LabConfig = {
             label: 'Practical Constraints',
             defaultText: 'practical constraints',
           },
+          outputLanguageSlot,
         ],
       },
       evaluationTools: {
