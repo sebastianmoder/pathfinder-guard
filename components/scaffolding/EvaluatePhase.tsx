@@ -82,8 +82,8 @@ export function EvaluatePhase({
           Evaluate the Response
         </h3>
         <p className="text-xs text-guard-blue-500">
-          Critically examine the AI's output using the tools below. Consider
-          what works, what doesn't, and what assumptions the AI made.
+          Critically examine the AI&apos;s output using the tools below. Consider
+          what works, what doesn&apos;t, and what assumptions the AI made.
         </p>
       </div>
 

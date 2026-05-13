@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { LabId, LabSessionState, ChatMessage, SessionHistoryEntry, Phase } from '@/lib/types';
+import type { LabSessionState, ChatMessage, SessionHistoryEntry, Phase } from '@/lib/types';
 
 const MAX_ENTRIES = 20;
 
@@ -34,7 +34,15 @@ export const useHistoryStore = create<HistoryStore>()(
           allIterations.length > 0 &&
           allIterations.every((it) => it.isComplete);
 
-        const chatSnapshot = messages.map(({ isStreaming: _s, ...rest }) => rest) as ChatMessage[];
+        const chatSnapshot: ChatMessage[] = messages.map(
+          ({ id, role, content, timestamp, iterationNumber }) => ({
+            id,
+            role,
+            content,
+            timestamp,
+            iterationNumber,
+          })
+        );
 
         const existingIndex = entries.findIndex(
           (e) => e.sessionSnapshot.sessionId === session.sessionId

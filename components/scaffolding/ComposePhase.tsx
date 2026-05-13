@@ -30,7 +30,7 @@ export function ComposePhase({
         </h3>
         <p className="text-xs text-guard-blue-500">
           Review the assembled prompt below. You can edit it directly or switch
-          to raw view for full control. When you're ready, send it to the AI.
+          to raw view for full control. When you&apos;re ready, send it to the AI.
         </p>
       </div>
 

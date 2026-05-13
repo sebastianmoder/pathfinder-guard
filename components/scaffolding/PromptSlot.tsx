@@ -15,12 +15,25 @@ export function PromptSlot({ label, value, defaultText }: PromptSlotProps) {
   const [justFilled, setJustFilled] = useState(false);
 
   useEffect(() => {
-    if (isFilled && !wasFilledRef.current) {
-      setJustFilled(true);
-      const timeout = setTimeout(() => setJustFilled(false), 600);
-      return () => clearTimeout(timeout);
-    }
+    const wasFilled = wasFilledRef.current;
     wasFilledRef.current = isFilled;
+
+    if (!isFilled || wasFilled) {
+      return;
+    }
+
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    const frame = requestAnimationFrame(() => {
+      setJustFilled(true);
+      timeout = setTimeout(() => setJustFilled(false), 600);
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
   }, [isFilled]);
 
   return (
