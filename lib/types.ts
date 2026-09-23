@@ -99,7 +99,57 @@ export interface ChatMessage {
   timestamp: number;
   iterationNumber: number;
   isStreaming?: boolean;
+  status?: ChatMessageStatus;
+  inReplyToMessageId?: string;
+  failure?: ChatErrorInfo;
 }
+
+export type ChatMessageStatus = 'streaming' | 'complete' | 'incomplete';
+
+export type ChatErrorCode =
+  | 'hosting_timeout'
+  | 'connection_interrupted'
+  | 'provider_overloaded'
+  | 'provider_unavailable'
+  | 'rate_limited'
+  | 'authentication'
+  | 'insufficient_credits'
+  | 'invalid_request'
+  | 'content_filter'
+  | 'output_limit'
+  | 'unknown';
+
+export interface ChatErrorInfo {
+  code: ChatErrorCode;
+  message: string;
+  retryable: boolean;
+  requestId: string;
+  generationId?: string;
+  elapsedMs: number;
+  hasPartialResponse: boolean;
+}
+
+export type ChatStreamEvent =
+  | {
+      type: 'start';
+      requestId: string;
+      startedAt: number;
+    }
+  | {
+      type: 'content';
+      content: string;
+      generationId?: string;
+    }
+  | {
+      type: 'finish';
+      finishReason: string;
+      generationId?: string;
+      elapsedMs: number;
+    }
+  | {
+      type: 'error';
+      error: ChatErrorInfo;
+    };
 
 export interface IterationAnswers {
   [questionId: string]: string;
@@ -155,7 +205,7 @@ export interface SessionHistoryEntry {
 export interface ChatState {
   messages: ChatMessage[];
   isStreaming: boolean;
-  error: string | null;
+  error: ChatErrorInfo | null;
   model: string;
 }
 

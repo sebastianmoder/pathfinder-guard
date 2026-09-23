@@ -13,6 +13,8 @@ interface ChatPanelProps {
   isStreaming?: boolean;
   canSendFreeText?: boolean;
   onSendMessage?: (message: string) => void;
+  onRetryMessage?: (messageId: string) => void;
+  onKeepPartialMessage?: (messageId: string) => void;
 }
 
 export function ChatPanel({
@@ -21,6 +23,8 @@ export function ChatPanel({
   isStreaming = false,
   canSendFreeText = false,
   onSendMessage,
+  onRetryMessage,
+  onKeepPartialMessage,
 }: ChatPanelProps) {
   const [draft, setDraft] = useState('');
   const trimmedDraft = draft.trim();
@@ -47,7 +51,11 @@ export function ChatPanel({
         <span className="text-sm font-medium text-guard-blue-700">AI Chat</span>
         <ModelBadge model={model} />
       </div>
-      <MessageList messages={messages} />
+      <MessageList
+        messages={messages}
+        onRetryMessage={onRetryMessage}
+        onKeepPartialMessage={onKeepPartialMessage}
+      />
       <div className="p-4 border-t border-guard-border space-y-3">
         {canSendFreeText && onSendMessage ? (
           <form onSubmit={handleSubmit} className="flex items-end gap-2">

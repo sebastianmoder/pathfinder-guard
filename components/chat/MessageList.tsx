@@ -6,9 +6,15 @@ import type { ChatMessage as ChatMessageType } from '@/lib/types';
 
 interface MessageListProps {
   messages: ChatMessageType[];
+  onRetryMessage?: (messageId: string) => void;
+  onKeepPartialMessage?: (messageId: string) => void;
 }
 
-export function MessageList({ messages }: MessageListProps) {
+export function MessageList({
+  messages,
+  onRetryMessage,
+  onKeepPartialMessage,
+}: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const latestMessageContent = messages[messages.length - 1]?.content;
 
@@ -33,7 +39,12 @@ export function MessageList({ messages }: MessageListProps) {
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4" role="log" aria-label="Chat messages" aria-live="polite">
       {messages.map((message) => (
-        <ChatMessage key={message.id} message={message} />
+        <ChatMessage
+          key={message.id}
+          message={message}
+          onRetry={onRetryMessage}
+          onKeepPartial={onKeepPartialMessage}
+        />
       ))}
       <div ref={bottomRef} />
     </div>

@@ -20,7 +20,15 @@ interface LabWorkspaceProps {
 export function LabWorkspace({ labId }: LabWorkspaceProps) {
   const hasHydrated = useHasHydrated();
   const { session, startLab } = useLabSession();
-  const { messages, isStreaming, error, model, sendMessage } = useChat();
+  const {
+    messages,
+    isStreaming,
+    error,
+    model,
+    sendMessage,
+    retryMessage,
+    keepPartialMessage,
+  } = useChat();
   const clearError = useCallback(
     () => useChatStore.getState().setError(null),
     [],
@@ -85,7 +93,7 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
   const canSendFreeText = messages.some(
     (message) =>
       message.role === "assistant" &&
-      !message.isStreaming &&
+      (message.status ?? (message.isStreaming ? "streaming" : "complete")) === "complete" &&
       message.content.trim().length > 0,
   );
 
@@ -145,6 +153,8 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
             isStreaming={isStreaming}
             canSendFreeText={canSendFreeText}
             onSendMessage={handleSendChatMessage}
+            onRetryMessage={retryMessage}
+            onKeepPartialMessage={keepPartialMessage}
           />
         }
       />
@@ -168,6 +178,8 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
             isStreaming={isStreaming}
             canSendFreeText={canSendFreeText}
             onSendMessage={handleSendChatMessage}
+            onRetryMessage={retryMessage}
+            onKeepPartialMessage={keepPartialMessage}
           />
           {error && (
             <div className="absolute bottom-28 left-0 right-0 mx-4 p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700 flex items-start gap-2 animate-fade-in-up">
@@ -184,7 +196,7 @@ export function LabWorkspace({ labId }: LabWorkspaceProps) {
                   d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
                 />
               </svg>
-              <span className="flex-1">{error}</span>
+              <span className="flex-1">{error.message}</span>
               <button
                 onClick={clearError}
                 className="shrink-0 text-red-400 hover:text-red-600 transition-colors"

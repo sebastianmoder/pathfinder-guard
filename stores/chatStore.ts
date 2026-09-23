@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { ChatMessage } from '@/lib/types';
+import type { ChatErrorInfo, ChatMessage } from '@/lib/types';
 import { DEFAULT_MODEL, DEFAULT_BYOK_MODEL } from '@/lib/constants';
 
 const LEGACY_DEFAULT_MODEL = 'arcee-ai/trinity-large-preview:free';
@@ -10,15 +10,18 @@ const LEGACY_DEFAULT_MODEL = 'arcee-ai/trinity-large-preview:free';
 interface ChatStore {
   messages: ChatMessage[];
   isStreaming: boolean;
-  error: string | null;
+  error: ChatErrorInfo | null;
   model: string;
   byokKey: string | null;
 
   addUserMessage: (content: string, iterationNumber: number) => string;
-  startStreaming: (iterationNumber: number) => string;
+  startStreaming: (iterationNumber: number, inReplyToMessageId: string) => string;
+  restartStreaming: (messageId: string) => void;
   appendStreamChunk: (messageId: string, chunk: string) => void;
   finishStreaming: (messageId: string) => void;
-  setError: (error: string | null) => void;
+  failStreaming: (messageId: string, error: ChatErrorInfo) => void;
+  acceptPartialMessage: (messageId: string) => void;
+  setError: (error: ChatErrorInfo | null) => void;
   setModel: (model: string) => void;
   setByokKey: (key: string | null) => void;
   clearMessages: () => void;
@@ -27,6 +30,33 @@ interface ChatStore {
 
 function generateId(): string {
   return crypto.randomUUID();
+}
+
+function normalizeRestoredMessages(messages: ChatMessage[]): ChatMessage[] {
+  return messages.map((message) => {
+    const wasStreaming = message.status === 'streaming' || message.isStreaming;
+    if (!wasStreaming) {
+      return {
+        ...message,
+        isStreaming: false,
+        status: message.status ?? 'complete',
+      };
+    }
+
+    return {
+      ...message,
+      isStreaming: false,
+      status: 'incomplete',
+      failure: message.failure ?? {
+        code: 'connection_interrupted',
+        message: 'The response was interrupted when this page was closed or reloaded.',
+        retryable: true,
+        requestId: `local-${generateId()}`,
+        elapsedMs: Math.max(0, Date.now() - message.timestamp),
+        hasPartialResponse: message.content.length > 0,
+      },
+    };
+  });
 }
 
 export const useChatStore = create<ChatStore>()(
@@ -46,6 +76,7 @@ export const useChatStore = create<ChatStore>()(
       content,
       timestamp: Date.now(),
       iterationNumber,
+      status: 'complete',
     };
     set((state) => ({
       messages: [...state.messages, message],
@@ -53,7 +84,7 @@ export const useChatStore = create<ChatStore>()(
     return id;
   },
 
-  startStreaming: (iterationNumber) => {
+  startStreaming: (iterationNumber, inReplyToMessageId) => {
     const id = generateId();
     const message: ChatMessage = {
       id,
@@ -62,6 +93,8 @@ export const useChatStore = create<ChatStore>()(
       timestamp: Date.now(),
       iterationNumber,
       isStreaming: true,
+      status: 'streaming',
+      inReplyToMessageId,
     };
     set((state) => ({
       messages: [...state.messages, message],
@@ -69,6 +102,25 @@ export const useChatStore = create<ChatStore>()(
       error: null,
     }));
     return id;
+  },
+
+  restartStreaming: (messageId) => {
+    set((state) => ({
+      messages: state.messages.map((m) =>
+        m.id === messageId
+          ? {
+              ...m,
+              content: '',
+              isStreaming: true,
+              status: 'streaming',
+              failure: undefined,
+              timestamp: Date.now(),
+            }
+          : m
+      ),
+      isStreaming: true,
+      error: null,
+    }));
   },
 
   appendStreamChunk: (messageId, chunk) => {
@@ -82,14 +134,54 @@ export const useChatStore = create<ChatStore>()(
   finishStreaming: (messageId) => {
     set((state) => ({
       messages: state.messages.map((m) =>
-        m.id === messageId ? { ...m, isStreaming: false } : m
+        m.id === messageId
+          ? {
+              ...m,
+              isStreaming: false,
+              status: 'complete',
+              failure: undefined,
+            }
+          : m
       ),
       isStreaming: false,
     }));
   },
 
+  failStreaming: (messageId, error) => {
+    set((state) => ({
+      messages: state.messages.map((m) =>
+        m.id === messageId
+          ? {
+              ...m,
+              isStreaming: false,
+              status: 'incomplete',
+              failure: error,
+            }
+          : m
+      ),
+      isStreaming: false,
+      error: null,
+    }));
+  },
+
+  acceptPartialMessage: (messageId) => {
+    set((state) => ({
+      messages: state.messages.map((m) =>
+        m.id === messageId
+          ? {
+              ...m,
+              isStreaming: false,
+              status: 'complete',
+              failure: undefined,
+            }
+          : m
+      ),
+      error: null,
+    }));
+  },
+
   setError: (error) => {
-    set({ error, isStreaming: false });
+    set({ error });
   },
 
   setModel: (model) => {
@@ -108,7 +200,10 @@ export const useChatStore = create<ChatStore>()(
   },
 
   restoreMessages: (messages) => {
-    set({ messages: messages.map((m) => ({ ...m, isStreaming: false })), error: null });
+    set({
+      messages: normalizeRestoredMessages(messages),
+      error: null,
+    });
   },
 }),
     {
@@ -127,6 +222,7 @@ export const useChatStore = create<ChatStore>()(
         return {
           ...currentState,
           ...persisted,
+          messages: normalizeRestoredMessages(persisted.messages ?? currentState.messages),
           model: shouldUpgradeLegacyDefault
             ? DEFAULT_MODEL
             : persisted.model ?? currentState.model,
