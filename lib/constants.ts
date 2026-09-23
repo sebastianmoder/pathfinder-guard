@@ -27,10 +27,10 @@ export type ModelOption = {
 };
 
 export const DEFAULT_MODEL_OPTION: ModelOption = {
-  id: 'minimax/minimax-m2.5',
-  name: 'MiniMax M2.5',
+  id: 'minimax/minimax-m3',
+  name: 'MiniMax M3',
   provider: 'MiniMax',
-  label: 'MiniMax M2.5 (MiniMax)',
+  label: 'MiniMax M3 (MiniMax)',
   availability: 'Free',
 };
 
