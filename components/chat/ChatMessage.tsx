@@ -1,10 +1,50 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { CopyButton } from './CopyButton';
 import { MarkdownContent } from './MarkdownContent';
 import type { ChatMessage as ChatMessageType } from '@/lib/types';
+
+function ProgressiveMarkdown({ content, isStreaming }: { content: string; isStreaming: boolean }) {
+  const [visibleContent, setVisibleContent] = useState(content);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setVisibleContent((current) => {
+        if (!content.startsWith(current)) {
+          clearInterval(timer);
+          return content;
+        }
+        if (current.length >= content.length) {
+          clearInterval(timer);
+          return current;
+        }
+
+        const pending = content.slice(current.length);
+        const wordsPerTick = pending.length > 1_000 ? 4 : pending.length > 300 ? 2 : 1;
+        let next = current;
+        for (let i = 0; i < wordsPerTick && next.length < content.length; i += 1) {
+          const remaining = content.slice(next.length);
+          next += /^\s*\S+\s*/.exec(remaining)?.[0] ?? remaining[0];
+        }
+        if (next.length >= content.length) clearInterval(timer);
+        return next;
+      });
+    }, 25);
+    return () => clearInterval(timer);
+  }, [content]);
+
+  return (
+    <>
+      <MarkdownContent content={visibleContent} />
+      {(isStreaming || visibleContent.length < content.length) && (
+        <span className="inline-block w-1.5 h-4 bg-guard-blue-400 animate-pulse ml-0.5 align-middle" />
+      )}
+    </>
+  );
+}
 
 interface ChatMessageProps {
   message: ChatMessageType;
@@ -17,6 +57,7 @@ export function ChatMessage({ message, onRetry, onKeepPartial }: ChatMessageProp
   const status = message.status ?? (message.isStreaming ? 'streaming' : 'complete');
   const isStreaming = status === 'streaming';
   const isIncomplete = status === 'incomplete';
+  const animateContent = !!message.animated && !isIncomplete;
   const showSettingsLink =
     message.failure?.code === 'authentication' ||
     message.failure?.code === 'insufficient_credits';
@@ -39,9 +80,11 @@ export function ChatMessage({ message, onRetry, onKeepPartial }: ChatMessageProp
         >
           {isUser
             ? <div className="whitespace-pre-wrap">{message.content}</div>
-            : <MarkdownContent content={message.content} />
+            : animateContent
+              ? <ProgressiveMarkdown key={message.timestamp} content={message.content} isStreaming={isStreaming} />
+              : <MarkdownContent content={message.content} />
           }
-          {isStreaming && (
+          {isStreaming && !animateContent && (
             <span className="inline-block w-1.5 h-4 bg-guard-blue-400 animate-pulse ml-0.5 align-middle" />
           )}
         </div>

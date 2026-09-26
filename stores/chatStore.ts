@@ -122,6 +122,7 @@ export const useChatStore = create<ChatStore>()(
               status: 'streaming',
               failure: undefined,
               job: undefined,
+              animated: false,
               timestamp: Date.now(),
             }
           : m
@@ -141,7 +142,7 @@ export const useChatStore = create<ChatStore>()(
 
   setActiveJob: (messageId, job) => {
     set((state) => ({
-      messages: state.messages.map((m) => m.id === messageId ? { ...m, job } : m),
+      messages: state.messages.map((m) => m.id === messageId ? { ...m, job, animated: true } : m),
     }));
   },
 

@@ -103,6 +103,7 @@ export interface ChatMessage {
   inReplyToMessageId?: string;
   failure?: ChatErrorInfo;
   job?: ChatJobReference;
+  animated?: boolean;
 }
 
 export interface ChatJobReference {
