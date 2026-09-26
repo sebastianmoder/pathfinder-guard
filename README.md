@@ -70,6 +70,10 @@ OPENROUTER_API_KEY=sk-or-v1-...
 
 Without either of those, `/api/chat` will return an error.
 
+On Netlify, also set `CHAT_JOB_SIGNING_SECRET` to a random 32-byte secret in the site environment variables with Functions scope (for example, generate one with `openssl rand -hex 32`). The variable must be available to both the Next.js functions and `chat-worker`. Redeploy after setting it. The Netlify chat path starts a background job and polls its progress; `npm run dev` keeps the direct stream for local development.
+
+Netlify Blobs holds generated text for up to one hour of access. Prompt input is stored only while a job runs and is removed when it finishes. The hourly `cleanup-chat-jobs` function removes expired or abandoned data on a subsequent run. Chat job events in Netlify function logs include request and job IDs for troubleshooting.
+
 ## Using the App
 
 1. Start from the landing page and choose one of the four labs.

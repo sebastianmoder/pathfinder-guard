@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { ChatErrorInfo, ChatMessage } from '@/lib/types';
+import type { ChatErrorInfo, ChatJobReference, ChatMessage } from '@/lib/types';
 import { DEFAULT_MODEL, DEFAULT_BYOK_MODEL } from '@/lib/constants';
 
 const LEGACY_DEFAULT_MODEL = 'arcee-ai/trinity-large-preview:free';
@@ -18,6 +18,8 @@ interface ChatStore {
   startStreaming: (iterationNumber: number, inReplyToMessageId: string) => string;
   restartStreaming: (messageId: string) => void;
   appendStreamChunk: (messageId: string, chunk: string) => void;
+  setActiveJob: (messageId: string, job: ChatJobReference) => void;
+  setJobContent: (messageId: string, content: string) => void;
   finishStreaming: (messageId: string) => void;
   failStreaming: (messageId: string, error: ChatErrorInfo) => void;
   acceptPartialMessage: (messageId: string) => void;
@@ -43,6 +45,10 @@ function normalizeRestoredMessages(messages: ChatMessage[]): ChatMessage[] {
       };
     }
 
+    if (message.job && message.job.startedAt + 60 * 60_000 > Date.now()) {
+      return { ...message, isStreaming: true, status: 'streaming' };
+    }
+
     return {
       ...message,
       isStreaming: false,
@@ -55,6 +61,7 @@ function normalizeRestoredMessages(messages: ChatMessage[]): ChatMessage[] {
         elapsedMs: Math.max(0, Date.now() - message.timestamp),
         hasPartialResponse: message.content.length > 0,
       },
+      job: undefined,
     };
   });
 }
@@ -114,6 +121,7 @@ export const useChatStore = create<ChatStore>()(
               isStreaming: true,
               status: 'streaming',
               failure: undefined,
+              job: undefined,
               timestamp: Date.now(),
             }
           : m
@@ -131,6 +139,20 @@ export const useChatStore = create<ChatStore>()(
     }));
   },
 
+  setActiveJob: (messageId, job) => {
+    set((state) => ({
+      messages: state.messages.map((m) => m.id === messageId ? { ...m, job } : m),
+    }));
+  },
+
+  setJobContent: (messageId, content) => {
+    set((state) => ({
+      messages: state.messages.map((m) =>
+        m.id === messageId && content.length >= m.content.length ? { ...m, content } : m
+      ),
+    }));
+  },
+
   finishStreaming: (messageId) => {
     set((state) => ({
       messages: state.messages.map((m) =>
@@ -140,6 +162,7 @@ export const useChatStore = create<ChatStore>()(
               isStreaming: false,
               status: 'complete',
               failure: undefined,
+              job: undefined,
             }
           : m
       ),
@@ -156,6 +179,7 @@ export const useChatStore = create<ChatStore>()(
               isStreaming: false,
               status: 'incomplete',
               failure: error,
+              job: undefined,
             }
           : m
       ),
@@ -173,6 +197,7 @@ export const useChatStore = create<ChatStore>()(
               isStreaming: false,
               status: 'complete',
               failure: undefined,
+              job: undefined,
             }
           : m
       ),
@@ -196,12 +221,14 @@ export const useChatStore = create<ChatStore>()(
   },
 
   clearMessages: () => {
-    set({ messages: [], error: null });
+    set({ messages: [], isStreaming: false, error: null });
   },
 
   restoreMessages: (messages) => {
+    const restored = normalizeRestoredMessages(messages);
     set({
-      messages: normalizeRestoredMessages(messages),
+      messages: restored,
+      isStreaming: restored.some((message) => message.status === 'streaming'),
       error: null,
     });
   },
@@ -216,13 +243,15 @@ export const useChatStore = create<ChatStore>()(
       }),
       merge: (persistedState, currentState) => {
         const persisted = (persistedState ?? {}) as Partial<ChatStore>;
+        const restored = normalizeRestoredMessages(persisted.messages ?? currentState.messages);
         const shouldUpgradeLegacyDefault =
           !persisted.byokKey && persisted.model === LEGACY_DEFAULT_MODEL;
 
         return {
           ...currentState,
           ...persisted,
-          messages: normalizeRestoredMessages(persisted.messages ?? currentState.messages),
+          messages: restored,
+          isStreaming: restored.some((message) => message.status === 'streaming'),
           model: shouldUpgradeLegacyDefault
             ? DEFAULT_MODEL
             : persisted.model ?? currentState.model,

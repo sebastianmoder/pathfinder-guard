@@ -102,6 +102,14 @@ export interface ChatMessage {
   status?: ChatMessageStatus;
   inReplyToMessageId?: string;
   failure?: ChatErrorInfo;
+  job?: ChatJobReference;
+}
+
+export interface ChatJobReference {
+  id: string;
+  accessToken: string;
+  requestId: string;
+  startedAt: number;
 }
 
 export type ChatMessageStatus = 'streaming' | 'complete' | 'incomplete';

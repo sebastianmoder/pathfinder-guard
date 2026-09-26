@@ -12,6 +12,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@netlify/blobs": "^11.1.1",
+    "@netlify/functions": "^6.0.0",
     "@next/third-parties": "^16.3.4",
     "clsx": "^2.1.1",
     "diff": "^9.0.0",

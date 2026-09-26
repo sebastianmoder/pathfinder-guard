@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import { NextResponse } from 'next/server';
 import { DEFAULT_MODEL } from '@/lib/constants';
+import { submitChatJob } from '@/lib/submitChatJob';
 import type { ChatErrorCode, ChatErrorInfo, ChatStreamEvent } from '@/lib/types';
 
 export const maxDuration = 60;
@@ -184,6 +185,10 @@ function logStreamResult(
 }
 
 export async function POST(request: Request) {
+  if (process.env.SITE_ID) {
+    return submitChatJob(request);
+  }
+
   const requestId = crypto.randomUUID();
   const startedAt = Date.now();
   let model = DEFAULT_MODEL;

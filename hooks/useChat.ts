@@ -1,9 +1,9 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useChatStore } from '@/stores/chatStore';
 import { useLabSessionStore } from '@/stores/labSessionStore';
-import type { ChatErrorCode, ChatErrorInfo, ChatMessage } from '@/lib/types';
+import type { ChatErrorCode, ChatErrorInfo, ChatJobReference, ChatMessage } from '@/lib/types';
 
 const AUTO_RETRY_CODES = new Set<ChatErrorCode>([
   'connection_interrupted',
@@ -14,6 +14,9 @@ const AUTO_RETRY_CODES = new Set<ChatErrorCode>([
 const HOSTING_TIMEOUT_THRESHOLD_MS = 50_000;
 const AUTO_RETRY_MIN_DELAY_MS = 750;
 const AUTO_RETRY_MAX_DELAY_MS = 1_500;
+const JOB_POLL_INTERVAL_MS = 1_500;
+const JOB_STALE_AFTER_MS = 5 * 60_000 + 45_000;
+const activeJobPolls = new Set<string>();
 
 class ChatStreamFailure extends Error {
   info: ChatErrorInfo;
@@ -85,6 +88,105 @@ function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+type JobSnapshot = {
+  id: string;
+  requestId: string;
+  startedAt: number;
+  status: 'queued' | 'running' | 'complete' | 'error';
+  content: string;
+  generationId?: string;
+  finishReason?: string;
+  error?: ChatErrorInfo;
+};
+
+function jobConnectionError(job: ChatJobReference, hasPartialResponse: boolean): ChatErrorInfo {
+  return {
+    code: 'connection_interrupted',
+    message: hasPartialResponse
+      ? 'The job status could not be reached. The partial response has been preserved.'
+      : 'The job status could not be reached. Please try again.',
+    retryable: true,
+    requestId: job.requestId,
+    elapsedMs: Date.now() - job.startedAt,
+    hasPartialResponse,
+  };
+}
+
+async function pollChatJob(assistantId: string, job: ChatJobReference) {
+  if (activeJobPolls.has(job.id)) return;
+  activeJobPolls.add(job.id);
+  let failures = 0;
+
+  try {
+    while (true) {
+      const current = useChatStore.getState().messages.find((item) => item.id === assistantId);
+      if (!current || current.job?.id !== job.id || messageStatus(current) !== 'streaming') return;
+
+      if (Date.now() - job.startedAt > JOB_STALE_AFTER_MS) {
+        throw new ChatStreamFailure({
+          code: 'hosting_timeout',
+          message: 'Generation did not finish within the five minute limit. The partial response has been preserved.',
+          retryable: true,
+          requestId: job.requestId,
+          elapsedMs: Date.now() - job.startedAt,
+          hasPartialResponse: current.content.length > 0,
+        });
+      }
+
+      try {
+        const response = await fetch(`/api/chat/jobs/${job.id}`, {
+          headers: { Authorization: `Bearer ${job.accessToken}` },
+          cache: 'no-store',
+        });
+        if (response.status === 404 || response.status === 410) {
+          throw new ChatStreamFailure(jobConnectionError(job, current.content.length > 0));
+        }
+        if (!response.ok) throw new Error(`Job polling returned ${response.status}`);
+        const snapshot = await response.json() as JobSnapshot;
+        if (snapshot.id !== job.id || typeof snapshot.content !== 'string') {
+          throw new Error('Invalid job status');
+        }
+        failures = 0;
+        useChatStore.getState().setJobContent(assistantId, snapshot.content);
+
+        if (snapshot.status === 'error') {
+          throw new ChatStreamFailure(snapshot.error ?? jobConnectionError(job, snapshot.content.length > 0));
+        }
+        if (snapshot.status === 'complete') {
+          useChatStore.getState().finishStreaming(assistantId);
+          if (snapshot.finishReason === 'length' || snapshot.finishReason === 'content_filter') {
+            useChatStore.getState().setError({
+              code: snapshot.finishReason === 'length' ? 'output_limit' : 'content_filter',
+              message: snapshot.finishReason === 'length'
+                ? 'The model reached its output limit, so the response may be truncated.'
+                : 'The model stopped its output because of a content policy.',
+              retryable: false,
+              requestId: job.requestId,
+              generationId: snapshot.generationId,
+              elapsedMs: Date.now() - job.startedAt,
+              hasPartialResponse: snapshot.content.length > 0,
+            });
+          }
+          return;
+        }
+      } catch (error) {
+        if (error instanceof ChatStreamFailure) throw error;
+        failures += 1;
+        if (failures >= 10 && navigator.onLine) throw error;
+      }
+      await delay(JOB_POLL_INTERVAL_MS);
+    }
+  } catch (error) {
+    const current = useChatStore.getState().messages.find((item) => item.id === assistantId);
+    if (!current || current.job?.id !== job.id) return;
+    useChatStore.getState().failStreaming(assistantId, error instanceof ChatStreamFailure
+      ? error.info
+      : jobConnectionError(job, current.content.length > 0));
+  } finally {
+    activeJobPolls.delete(job.id);
+  }
+}
+
 export function useChat() {
   const messages = useChatStore((s) => s.messages);
   const isStreaming = useChatStore((s) => s.isStreaming);
@@ -95,10 +197,19 @@ export function useChat() {
   const startStreaming = useChatStore((s) => s.startStreaming);
   const restartStreaming = useChatStore((s) => s.restartStreaming);
   const appendStreamChunk = useChatStore((s) => s.appendStreamChunk);
+  const setActiveJob = useChatStore((s) => s.setActiveJob);
   const finishStreaming = useChatStore((s) => s.finishStreaming);
   const failStreaming = useChatStore((s) => s.failStreaming);
   const acceptPartialMessage = useChatStore((s) => s.acceptPartialMessage);
   const setError = useChatStore((s) => s.setError);
+
+  useEffect(() => {
+    for (const message of useChatStore.getState().messages) {
+      if (message.status === 'streaming' && message.job) {
+        void pollChatJob(message.id, message.job);
+      }
+    }
+  }, [messages]);
 
   const runCompletion = useCallback(
     async (assistantId: string) => {
@@ -159,6 +270,28 @@ export function useChat() {
               elapsedMs: Date.now() - attemptStartedAt,
               hasPartialResponse: false,
             });
+          }
+
+          if (response.status === 202) {
+            const submitted = await response.json() as {
+              jobId?: string;
+              accessToken?: string;
+              requestId?: string;
+              startedAt?: number;
+            };
+            if (!submitted.jobId || !submitted.accessToken || !submitted.requestId ||
+                typeof submitted.startedAt !== 'number') {
+              throw new Error('Invalid job submission response');
+            }
+            const job: ChatJobReference = {
+              id: submitted.jobId,
+              accessToken: submitted.accessToken,
+              requestId: submitted.requestId,
+              startedAt: submitted.startedAt,
+            };
+            setActiveJob(assistantId, job);
+            await pollChatJob(assistantId, job);
+            return;
           }
 
           const reader = response.body?.getReader();
@@ -337,6 +470,7 @@ export function useChat() {
       model,
       byokKey,
       appendStreamChunk,
+      setActiveJob,
       finishStreaming,
       failStreaming,
       restartStreaming,
